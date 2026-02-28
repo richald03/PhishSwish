@@ -19,7 +19,7 @@ public class FirestoreService {
             long timestamp,
             String extractedUrl
     ) {
-        autoSaveScan(snippet, label, confidence, indicators, timestamp, extractedUrl, null, null);
+        autoSaveScan(snippet, label, confidence, indicators, timestamp, extractedUrl, null, null, null);
     }
 
     public static void autoSaveScan(
@@ -30,7 +30,8 @@ public class FirestoreService {
             long timestamp,
             String extractedUrl,
             String aiAnalysis,
-            String aiRecommendation
+            String aiRecommendation,
+            String sender
     ) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -53,6 +54,10 @@ public class FirestoreService {
 
         if (extractedUrl != null && !extractedUrl.trim().isEmpty()) {
             doc.put("extractedUrl", extractedUrl);
+        }
+
+        if (sender != null && !sender.trim().isEmpty()) {
+            doc.put("sender", sender.trim());
         }
 
         String scanId = String.valueOf(timestamp);

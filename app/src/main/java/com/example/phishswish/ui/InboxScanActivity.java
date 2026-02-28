@@ -387,6 +387,10 @@ public class InboxScanActivity extends BaseActivity {
                 ? ruleResult.getUrls().get(0)
                 : "";
 
+        String sender = (message != null && message.address != null && !message.address.trim().isEmpty())
+                ? message.address.trim()
+                : "Unknown";
+
         if (isOnline()) {
             FirestoreService.autoSaveScan(
                     snippet,
@@ -394,16 +398,15 @@ public class InboxScanActivity extends BaseActivity {
                     (int) ruleResult.getConfidence(),
                     ruleResult.getIndicators(),
                     ts,
-                    extractedUrl
+                    extractedUrl,
+                    null,
+                    null,
+                    sender
             );
         }
 
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("scan_result", ruleResult);
-
-        String sender = (message != null && message.address != null && !message.address.trim().isEmpty())
-                ? message.address.trim()
-                : "Unknown";
         intent.putExtra("sender", sender);
 
         // ML-based fields removed; Gemini will own the final verdict.

@@ -147,7 +147,7 @@ public class PasteScanActivity extends BaseActivity {
 
         if (isOnline()) {
             FirestoreService.autoSaveScan(snippet, ruleResult.getLabel(), (int) ruleResult.getConfidence(),
-                    ruleResult.getIndicators(), ts, extractedUrl);
+                    ruleResult.getIndicators(), ts, extractedUrl, null, null, sender);
         }
 
         Intent intent = new Intent(this, ResultActivity.class);

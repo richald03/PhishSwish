@@ -13,6 +13,7 @@ public class FirestoreScan implements Serializable {
     public String extractedUrl;
     public String aiAnalysis;
     public String aiRecommendation;
+    public String sender;
 
     public FirestoreScan() {} // required
 

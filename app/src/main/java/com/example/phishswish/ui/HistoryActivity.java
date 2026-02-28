@@ -90,7 +90,8 @@ public class HistoryActivity extends BaseActivity {
                 // Pass existing AI data to prevent re-prompting
                 i.putExtra("aiAnalysis", item.aiAnalysis);
                 i.putExtra("aiRecommendation", item.aiRecommendation);
-                
+                i.putExtra("sender", item.sender != null ? item.sender : "Unknown");
+
                 startActivity(i);
             }
 
@@ -269,7 +270,8 @@ public class HistoryActivity extends BaseActivity {
                         int confidence = confLong == null ? 0 : confLong.intValue();
 
                         String extractedUrl = doc.getString("extractedUrl");
-                        
+                        String sender = doc.getString("sender");
+
                         // Retrieve saved AI data from Firestore
                         String aiAnalysis = doc.getString("aiAnalysis");
                         String aiRecommendation = doc.getString("aiRecommendation");
@@ -285,6 +287,7 @@ public class HistoryActivity extends BaseActivity {
                         FirestoreScan scan = new FirestoreScan(docId, snippet, label, confidence, timestamp, indicators, extractedUrl);
                         scan.aiAnalysis = aiAnalysis;
                         scan.aiRecommendation = aiRecommendation;
+                        scan.sender = sender;
                         fullList.add(scan);
                     }
 

@@ -549,9 +549,11 @@ public class ResultActivity extends BaseActivity {
         }
         String extractedUrl = (result.getUrls() != null && !result.getUrls().isEmpty())
                 ? result.getUrls().get(0) : "";
+        String sender = getIntent().getStringExtra("sender");
+        if (sender == null || sender.trim().isEmpty()) sender = "Unknown";
 
-        FirestoreService.autoSaveScan(snippet, result.getLabel(), (int) result.getConfidence(), 
-                result.getIndicators(), ts, extractedUrl, aiAnalysis, aiRecommendation);
+        FirestoreService.autoSaveScan(snippet, result.getLabel(), (int) result.getConfidence(),
+                result.getIndicators(), ts, extractedUrl, aiAnalysis, aiRecommendation, sender);
     }
 
     private void handleHistoryMode() {
