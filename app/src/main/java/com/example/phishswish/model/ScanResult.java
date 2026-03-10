@@ -8,9 +8,7 @@ public class ScanResult implements Serializable {
     private String label;
     private float score;
     private float confidence;
-    private ArrayList<String> indicators;
     private ArrayList<String> reasons;
-    private String recommendation;
     private ArrayList<String> urls;
     private String snippet;
     private long timestamp;
@@ -33,16 +31,8 @@ public class ScanResult implements Serializable {
         return confidence;
     }
 
-    public ArrayList<String> getIndicators() {
-        return indicators;
-    }
-
     public ArrayList<String> getReasons() {
         return reasons;
-    }
-
-    public String getRecommendation() {
-        return recommendation;
     }
 
     public ArrayList<String> getUrls() {
@@ -71,16 +61,8 @@ public class ScanResult implements Serializable {
         this.confidence = confidence;
     }
 
-    public void setIndicators(ArrayList<String> indicators) {
-        this.indicators = indicators;
-    }
-
     public void setReasons(ArrayList<String> reasons) {
         this.reasons = reasons;
-    }
-
-    public void setRecommendation(String recommendation) {
-        this.recommendation = recommendation;
     }
 
     public void setUrls(ArrayList<String> urls) {

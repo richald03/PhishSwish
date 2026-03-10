@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Basic Overrides -->
+    <color name="black">#FFFFFFFF</color>
+    <color name="white">#FF000000</color>
+
+    <!-- Semantic Colors (Dark) -->
+    <color name="app_bg">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="text_primary">#E0E0E0</color>
+    <color name="text_muted">#9CA3AF</color>
+    <color name="divider">#374151</color>
+    <color name="nav_bg">#1E1E1E</color>
+
+    <!-- Brand / Functional -->
+    <color name="home_primary">#60A5FA</color>
+    <!-- Slightly adjusted backgrounds and surfaces -->
+    <color name="home_bg">#121212</color>
+    <color name="text_dark">#F9FAFB</color>
+    <color name="card_white">#1E1E1E</color>
+    <color name="icon_bg">#1F2937</color>
+    <color name="safe_blue">#34D399</color>
+    <color name="spam_orange">#FBBF24</color>
+    <color name="scam_red">#F87171</color>
+
+    <color name="result_safe_bg">#064E3B</color>
+    <color name="result_spam_bg">#78350F</color>
+    <color name="result_scam_bg">#7F1D1D</color>
+
+    <color name="onboarding_start">#121212</color>
+    <color name="onboarding_center">#1A1A1A</color>
+
+    <!-- Theme Aliases -->
+    <color name="colorPrimary">#60A5FA</color>
+    <color name="colorPrimaryDark">#3B82F6</color>
+    <color name="colorSecondary">#FBBF24</color>
+    <color name="colorOnPrimary">#121212</color>
+    <color name="colorOnSecondary">#121212</color>
+    <color name="colorSurface">#1E1E1E</color>
+    <color name="colorOnSurface">#F9FAFB</color>
+    <color name="colorBackground">#121212</color>
+
+    <!-- Camera Scanning instruction text (theme-aware) -->
+    <color name="camera_instruction_text_color">#FFFFFF</color>
+
+    <!-- Camera Scanning overlay controls on camera preview (always white) -->
+    <color name="camera_overlay_icon_color">#FFFFFFFF</color>
+
+</resources>

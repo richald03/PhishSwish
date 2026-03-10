@@ -82,21 +82,21 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btnPaste).setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View v, Completion completion) {
-                startActivity(new Intent(MainActivity.this, PasteScanActivity.class));
+                navigateWithLoading(PasteScanActivity.class);
                 completion.onComplete();
             }
         });
         findViewById(R.id.btnInbox).setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View v, Completion completion) {
-                startActivity(new Intent(MainActivity.this, InboxScanActivity.class));
+                navigateWithLoading(InboxScanActivity.class);
                 completion.onComplete();
             }
         });
-        findViewById(R.id.btnHistory).setOnClickListener(new SafeClickListener() {
+        findViewById(R.id.btnArScan).setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View v, Completion completion) {
-                startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+                navigateWithLoading(ArScanActivity.class);
                 completion.onComplete();
             }
         });
@@ -107,19 +107,29 @@ public class MainActivity extends BaseActivity {
             ivAvatar.setOnClickListener(new SafeClickListener() {
                 @Override
                 public void onSafeClick(View v, Completion completion) {
-                    startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                    navigateWithLoading(SettingsActivity.class);
                     completion.onComplete();
                 }
             });
         }
 
-        findViewById(R.id.btnLogout).setOnClickListener(new SafeClickListener() {
-            @Override
-            public void onSafeClick(View v, Completion completion) {
-                showLogoutConfirmation();
-                completion.onComplete();
-            }
-        });
+        ImageButton btnTheme = findViewById(R.id.btnThemeToggle);
+        if (btnTheme != null) {
+            btnTheme.setImageResource(com.example.phishswish.utils.ThemeManager.isDarkMode(this) 
+                ? R.drawable.ic_sun 
+                : R.drawable.ic_moon);
+            
+            btnTheme.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View v, Completion completion) {
+                    com.example.phishswish.utils.ThemeManager.toggleTheme(MainActivity.this);
+                    btnTheme.setImageResource(com.example.phishswish.utils.ThemeManager.isDarkMode(MainActivity.this) 
+                        ? R.drawable.ic_sun 
+                        : R.drawable.ic_moon);
+                    completion.onComplete();
+                }
+            });
+        }
 
         bottomNav = findViewById(R.id.bottom_navigation);
         BottomNavHelper.setup(this, bottomNav, navProgress, R.id.nav_home);
@@ -147,9 +157,9 @@ public class MainActivity extends BaseActivity {
 
                         String display = (username != null && !username.isEmpty()) ? username : 
                                          ((user.getDisplayName() != null && !user.getDisplayName().isEmpty()) ? user.getDisplayName() : 
-                                         ((user.getEmail() != null) ? user.getEmail().split("@")[0] : "User"));
+                                         ((user.getEmail() != null) ? user.getEmail().split("@")[0] : getString(R.string.default_user)));
                         
-                        if (tvGreeting != null) tvGreeting.setText("Hi, " + display + "! 👋");
+                        if (tvGreeting != null) tvGreeting.setText(getString(R.string.greeting_hi, display));
                         if (tvName != null) tvName.setText(display);
 
                         if (profileImage != null && !profileImage.isEmpty() && ivAvatar != null) {
@@ -161,37 +171,18 @@ public class MainActivity extends BaseActivity {
                         }
                     } else {
                         String display = (user.getDisplayName() != null && !user.getDisplayName().isEmpty()) ? user.getDisplayName() : 
-                                         ((user.getEmail() != null) ? user.getEmail().split("@")[0] : "User");
-                        if (tvGreeting != null) tvGreeting.setText("Hi, " + display + "! 👋");
+                                         ((user.getEmail() != null) ? user.getEmail().split("@")[0] : getString(R.string.default_user));
+                        if (tvGreeting != null) tvGreeting.setText(getString(R.string.greeting_hi, display));
                         if (tvName != null) tvName.setText(display);
                     }
                 });
     }
 
     private void loadScansCountToday(String uid) {
-        if (!isOnline()) return;
-        long twentyFourHoursAgo = System.currentTimeMillis() - (24 * 60 * 60 * 1000);
-        Date startDate = new Date(twentyFourHoursAgo);
-
-        FirebaseFirestore.getInstance().collection("users")
-                .document(uid)
-                .collection("scans")
-                .whereGreaterThanOrEqualTo("timestamp", startDate)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int count = 0;
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        Boolean hidden = doc.getBoolean("hiddenInHistory");
-                        if (hidden != null && hidden) continue;
-
-                        Boolean hasAi = doc.getBoolean("hasAiAnalysis");
-                        if (hasAi == null || !hasAi) continue;
-
-                        count++;
-                    }
-                    tvScansCount.setText(String.valueOf(count));
-                })
-                .addOnFailureListener(e -> tvScansCount.setText("0"));
+        if (tvScansCount != null) {
+            int count = com.example.phishswish.utils.DailyScanTracker.getCount(this);
+            tvScansCount.setText(String.valueOf(count));
+        }
     }
 
     private void loadCategoryCounts(String uid) {
@@ -217,14 +208,14 @@ public class MainActivity extends BaseActivity {
                             else if (normalized.equals("scam")) scam++;
                         }
                     }
-                    animateNumber(tvSafeCount, safe, "Safe ");
-                    animateNumber(tvSpamCount, spam, "Spam ");
-                    animateNumber(tvScamCount, scam, "Scam ");
+                    animateNumber(tvSafeCount, safe, getString(R.string.safe_prefix));
+                    animateNumber(tvSpamCount, spam, getString(R.string.spam_prefix));
+                    animateNumber(tvScamCount, scam, getString(R.string.scam_prefix));
                 })
                 .addOnFailureListener(e -> {
-                    tvSafeCount.setText("Safe 0");
-                    tvSpamCount.setText("Spam 0");
-                    tvScamCount.setText("Scam 0");
+                    tvSafeCount.setText(getString(R.string.safe_prefix) + "0");
+                    tvSpamCount.setText(getString(R.string.spam_prefix) + "0");
+                    tvScamCount.setText(getString(R.string.scam_prefix) + "0");
                 });
     }
 
@@ -237,15 +228,24 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onOnlineStateChanged(boolean isOnline) {
+        super.onOnlineStateChanged(isOnline);
         if (tvOnline == null) return;
         if (isOnline) {
-            tvOnline.setText("Online");
+            tvOnline.setText(getString(R.string.online));
             tvOnline.setTextColor(Color.parseColor("#16A34A"));
             tvOnline.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dot_green, 0, 0, 0);
             tvOnline.setCompoundDrawablePadding(12);
             tvOnline.setBackgroundResource(R.drawable.bg_chip_online);
+            
+            // Refresh data when coming back online
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                loadUserProfile(user);
+                loadScansCountToday(user.getUid());
+                loadCategoryCounts(user.getUid());
+            }
         } else {
-            tvOnline.setText("Offline");
+            tvOnline.setText(getString(R.string.offline));
             tvOnline.setTextColor(Color.parseColor("#DC2626"));
             tvOnline.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dot_red, 0, 0, 0);
             tvOnline.setCompoundDrawablePadding(12);
@@ -268,10 +268,14 @@ public class MainActivity extends BaseActivity {
 
     private void showLogoutConfirmation() {
         new AlertDialog.Builder(this)
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to log out?")
-                .setPositiveButton("Yes", (dialog, which) -> performLogout())
-                .setNegativeButton("No", null)
+                .setTitle(getString(R.string.dialog_logout_title))
+                .setMessage(getString(R.string.dialog_logout_message))
+                .setPositiveButton(getString(R.string.btn_yes), (dialog, which) -> {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                })
+                .setNegativeButton(getString(R.string.btn_cancel), null)
                 .show();
     }
 

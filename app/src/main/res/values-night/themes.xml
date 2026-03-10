@@ -13,5 +13,6 @@
         
         <!-- Status bar color. Transparent to allow layout background to show through -->
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

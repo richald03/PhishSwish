@@ -1,3 +1,375 @@
 <resources>
     <string name="app_name">PhishSwish</string>
+
+    <!-- Settings Preferences -->
+    <string name="pref_language">Language</string>
+    <string name="pref_language_subtitle_en">English</string>
+    <string name="pref_language_subtitle_tl">Tagalog</string>
+    <string name="dialog_select_language">Select Language</string>
+    <string name="pref_filter_deleting">Filter Deleting</string>
+    <string name="pref_filter_deleting_sub">Delete messages on your history</string>
+    <string name="pref_change_password">Change Password</string>
+    <string name="pref_change_password_sub">Update your security credentials</string>
+    <string name="pref_logout">Logout</string>
+    <string name="pref_logout_sub">Sign out from your account</string>
+    <string name="pref_privacy">Privacy Policy</string>
+    <string name="pref_privacy_sub">Terms and data management</string>
+    <string name="pref_faqs">FAQs</string>
+    <string name="pref_faqs_sub">Frequently asked questions</string>
+    <string name="pref_about">About Us</string>
+    <string name="pref_about_sub">Learn more about PhishSwish</string>
+    <string name="title_settings">Profile Settings</string>
+    <string name="btn_upload_profile">Upload Profile</string>
+    <string name="label_account_actions">ACCOUNT ACTIONS</string>
+    <string name="label_app_preferences">APP PREFERENCES</string>
+    <string name="label_support_legal">SUPPORT &amp; LEGAL</string>
+
+    <!-- Dialog buttons shared -->
+    <string name="btn_yes">Yes</string>
+    <string name="btn_no">No</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_continue">Continue</string>
+    <string name="btn_ok">OK</string>
+
+    <!-- Logout -->
+    <string name="dialog_logout_title">Logout</string>
+    <string name="dialog_logout_message">Are you sure you want to log out?</string>
+
+    <!-- Change Password -->
+    <string name="dialog_change_password_title">Change Password</string>
+    <string name="dialog_change_password_message">Are you sure you want to change your password?</string>
+    <string name="dialog_verify_identity_title">Verify Identity</string>
+    <string name="dialog_verify_identity_message">Please enter your current password to proceed.</string>
+    <string name="dialog_update_password_title">Update Password</string>
+    <string name="dialog_update_password_message">Enter your new password below.</string>
+    <string name="hint_current_password">Current Password</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="btn_verify">Verify</string>
+    <string name="btn_update">Update</string>
+    <string name="msg_password_updated">Password updated successfully!</string>
+    <string name="msg_password_update_failed">Failed to update password.</string>
+    <string name="error_password_empty">Password cannot be empty</string>
+    <string name="error_password_incorrect">Incorrect current password</string>
+    <string name="error_password_too_short">Password must be at least 6 characters</string>
+
+    <!-- Filter Delete Dialog -->
+    <string name="dialog_filter_delete_title">Filter Delete History</string>
+    <string name="filter_option_spam">Spam messages</string>
+    <string name="filter_option_scam">Scam messages</string>
+    <string name="filter_option_safe">Safe messages</string>
+    <string name="btn_delete">Delete</string>
+    <string name="msg_select_at_least_one">Please select at least one category.</string>
+    <string name="msg_no_matching_history">No matching history to delete.</string>
+    <string name="msg_filtered_history_cleared">Filtered history cleared.</string>
+    <string name="msg_delete_failed">Failed to delete filtered history.</string>
+    <string name="msg_fetch_failed">Failed to fetch history.</string>
+
+    <!-- Gallery / Profile -->
+    <string name="dialog_access_gallery_title">Access Gallery</string>
+    <string name="dialog_access_gallery_message">Do you want to open your gallery to select a profile picture?</string>
+    <string name="btn_open">Open</string>
+    <string name="dialog_permission_title">Permission Required</string>
+    <string name="dialog_permission_message">PhishSwish needs access to your gallery to let you upload a profile picture. Would you like to grant permission?</string>
+    <string name="btn_allow">Allow</string>
+    <string name="btn_not_now">Not Now</string>
+    <string name="msg_permission_denied">Permission denied to access gallery</string>
+    <string name="msg_image_load_failed">Failed to load image</string>
+    <string name="msg_profile_updated">Profile updated</string>
+
+    <!-- Main Activity -->
+    <string name="status_online">Online</string>
+    <string name="status_offline">Offline</string>
+    <string name="btn_logout_main">Logout</string>
+    <string name="label_safe">Safe</string>
+    <string name="label_spam">Spam</string>
+    <string name="label_scam">Scam</string>
+
+
+    <!-- Paste Scan -->
+    <string name="hint_sender">Sender</string>
+    <string name="hint_message">Paste message here…</string>
+    <string name="btn_scan">Scan</string>
+    <string name="btn_clear">Clear</string>
+    <string name="error_sender_required">Sender is required.</string>
+    <string name="error_message_required">Message is required.</string>
+    <string name="label_ai_powered">AI-Powered Detection. No scans yet.</string>
+    <string name="label_last_scan_prefix">AI-Powered Detection. Last scan: </string>
+
+    <!-- Result Screen -->
+    <string name="analyzing_message">Analyzing with AI...</string>
+    <string name="label_sender_prefix">Sender: </string>
+    <string name="btn_copy_link">Copy Link</string>
+    <string name="btn_open_link">Open Link</string>
+    <string name="msg_url_copied">URL copied to clipboard</string>
+    <string name="msg_no_result">No result data found</string>
+    <string name="msg_cannot_open_url">Could not open URL</string>
+
+    <!-- History -->
+    <string name="title_history">Scan History</string>
+    <string name="msg_no_history">No scan history found.</string>
+
+    <!-- Login -->
+    <string name="title_login">Login</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">Log In</string>
+    <string name="btn_google_login">Continue with Google</string>
+    <string name="link_go_register">Don\'t have an account? Register</string>
+    <string name="link_forgot">Forgot Password?</string>
+    <string name="dialog_google_signin_title">Google Sign-In</string>
+    <string name="dialog_google_signin_message">PhishSwish will use your Google account for authentication and syncing scan history.</string>
+    <string name="dialog_login_success_title">Login Successful</string>
+    <string name="dialog_login_success_message">Welcome back! You have signed in successfully.</string>
+    <string name="msg_signin_cancelled">Google sign-in cancelled.</string>
+    <string name="msg_google_auth_failed">Google authentication failed. Please try again.</string>
+
+    <!-- Register -->
+    <string name="title_register">Create Account</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_google_register">Continue with Google</string>
+    <string name="link_go_login">Already have an account? Log In</string>
+    <string name="dialog_account_created_title">Account Created</string>
+    <string name="dialog_account_created_message">Welcome to PhishSwish! Your account has been successfully created.</string>
+    <string name="btn_get_started">Get Started</string>
+
+    <!-- Onboarding -->
+    <string name="btn_get_started_onboarding">Get Started</string>
+
+    <!-- Inbox Scan -->
+    <string name="title_inbox_scan">Inbox Scan</string>
+    <string name="msg_grant_sms_permission">Grant SMS permission to scan your inbox.</string>
+    <string name="msg_grant_camera_permission">Camera permission is required for Camera Scanning.</string>
+
+    <!-- No Internet Banner -->
+    <string name="msg_no_internet">No internet connection</string>
+    <string name="banner_no_internet_title">No Internet Connection</string>
+    <string name="banner_no_internet_sub">Offline features only. Please reconnect.</string>
+
+    <!-- Main Screen -->
+    <string name="main_subtitle">Stay safe from phishing and scams.</string>
+    <string name="label_scans_today">Scans Today</string>
+    <string name="card_paste_scan_title">Paste &amp; Scan</string>
+    <string name="card_paste_scan_sub">Analyze a suspicious message by pasting text.</string>
+    <string name="card_inbox_scan_title">Inbox Scan</string>
+    <string name="card_inbox_scan_sub">Scan your recent messages for potential scams.</string>
+    <string name="card_scan_history_title">Scan History</string>
+    <string name="card_scan_history_sub">Review results and details of previous scans.</string>
+    <string name="card_camera_scan_title">Camera Scanning</string>
+    <string name="card_camera_scan_sub">Scan visible messages using your camera in real-time.</string>
+
+    <!-- Login Screen -->
+    <string name="login_welcome_title">Welcome Back!</string>
+    <string name="login_welcome_subtitle">Sign in to continue</string>
+    <string name="login_or_continue_with">or continue with</string>
+    <string name="login_no_account">Don\'t have an account? </string>
+    <string name="login_register_link">Register</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Create Account</string>
+    <string name="hint_username_display">Username (display name)</string>
+    <string name="hint_email_address">Email Address</string>
+    <string name="register_or_sign_up_with">or sign up with</string>
+    <string name="register_have_account">Already have an account? </string>
+    <string name="register_login_link">Login</string>
+
+    <!-- Paste Scan Screen -->
+    <string name="paste_scan_card_title">Quick Analysis</string>
+    <string name="paste_scan_card_sub">Paste suspicious messages, URLs, or email headers below for a real-time phishing audit.</string>
+    <string name="btn_analyze_content">Analyze Content</string>
+    <string name="btn_clear_input">Clear Input</string>
+
+    <!-- Result Screen -->
+    <string name="section_ai_analysis">AI ANALYSIS</string>
+    <string name="result_ai_thinking">The AI is thinking...</string>
+    <string name="section_detected_link">DETECTED LINK</string>
+    <string name="result_no_links_detected">No suspicious links detected in this content.</string>
+    <!-- History Screen -->
+    <string name="chip_all">ALL</string>
+    <string name="chip_safe">SAFE</string>
+    <string name="chip_spam">SPAM</string>
+    <string name="chip_scam">SCAM</string>
+    <string name="msg_no_scans_yet">No scans yet</string>
+
+    <!-- Inbox Scan Screen -->
+    <string name="inbox_search_hint">Search senders or subjects...</string>
+    <string name="inbox_chip_all">All Messages</string>
+    <string name="inbox_chip_unread">Unread</string>
+    <string name="inbox_chip_links">With Links</string>
+    <string name="inbox_recent_messages">RECENT MESSAGES</string>
+    <string name="inbox_no_sms">No SMS messages found.</string>
+
+    <!-- Forgot Password Screen -->
+    <string name="forgot_title">Recover Account</string>
+    <string name="forgot_subtitle">Enter your registered email to reset your password</string>
+    <string name="forgot_btn_send">Send Reset Link</string>
+
+    <!-- Onboarding Screen -->
+    <string name="onboarding_title">Scan Before\nYou Click</string>
+    <string name="onboarding_subtitle">Protect your digital life by verifying suspicious SMS links instantly with PhishSwish.</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_inbox">Inbox</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- No Internet Dialogs -->
+    <string name="no_internet_title">No Internet Connection</string>
+    <string name="no_internet_subtitle">Please try again later.</string>
+    <string name="no_internet_oops">Oops!</string>
+    <string name="no_internet_message">No internet connection.\nPlease try again later.</string>
+    <!-- Extra Toasts & Errors -->
+    <string name="msg_registration_failed">Registration failed. Please try again.</string>
+    <string name="msg_profile_setup_failed">Account created, but profile setup failed. Please check your internet.</string>
+    <string name="msg_error_username">Error resolving username.</string>
+    <string name="msg_username_not_found">Username not found. Please register.</string>
+    <string name="msg_no_internet_check">No internet connection. Check your network and try again.</string>
+    <string name="msg_incorrect_login">Incorrect login details. Please try again.</string>
+    <string name="msg_too_many_attempts">Too many attempts. Try again later.</string>
+    <string name="msg_auth_failed">Authentication failed. Please try again.</string>
+    <string name="msg_refreshing_inbox">Refreshing inbox...</string>
+    <string name="msg_inbox_up_to_date">Your inbox is up to date.</string>
+    <string name="msg_voice_search_not_supported">Voice search not supported on this device.</string>
+    <string name="msg_failed_read_inbox">Failed to read inbox.</string>
+    <string name="msg_empty_message_scan">Empty message cannot be scanned.</string>
+    <string name="msg_item_removed">Item removed from history.</string>
+    <string name="msg_item_delete_failed">Failed to delete item.</string>
+    <string name="msg_no_history_delete">No history to delete.</string>
+    <string name="msg_history_cleared">History cleared.</string>
+    <string name="msg_reset_link_sent">Password reset link sent. Please check your inbox and Spam/Junk folder.</string>
+    <string name="msg_opening_support">Opening support channel...</string>
+    <string name="msg_privacy_soon">Privacy Policy screen coming soon</string>
+    <string name="msg_about_soon">About screen coming soon</string>
+    <string name="msg_saved_cloud">Saved to history &amp; cloud!</string>
+    <string name="msg_cloud_save_failed">Cloud save failed: </string>
+    <string name="error_empty_email_reset">Enter your registered email to reset your password.</string>
+    <string name="error_invalid_email">Enter a valid email address (example@gmail.com).</string>
+    <string name="error_reset_failed">Unable to send reset link. Please try again.</string>
+    <string name="error_no_account">No account found with this email.</string>
+    <string name="error_too_many_requests">Too many requests. Please try again later.</string>
+    <string name="default_user">User</string>
+    <string name="greeting_hi">Hi, %1$s! 👋</string>
+    <string name="safe_prefix">&#160;Safe&#160;&#160;&#160;</string>
+    <string name="spam_prefix">Spam&#160;&#160;&#160;</string>
+    <string name="scam_prefix">Scam&#160;&#160;&#160;</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    
+    <!-- Result Screen -->
+    <string name="title_analysis_result">Analysis Result</string>
+    <string name="label_certainty">CERTAINTY</string>
+    <string name="result_waiting">Wait for full analysis...</string>
+    <string name="label_malicious">MALICIOUS</string>
+    <string name="label_checking">Link Status: Checking...</string>
+    <string name="section_detected_link_upper">DETECTED LINK</string>
+
+    <!-- Privacy Policy -->
+    <string name="title_privacy_policy">Privacy Policy</string>
+    <string name="pp_section1_title">1. Introduction</string>
+    <string name="pp_section1_body">PhishSwish respects your privacy and is committed to protecting your personal information while providing scam detection services.</string>
+    <string name="pp_section2_title">2. Information We Collect</string>
+    <string name="pp_section2_body">We may collect:\n- Account information (email, username)\n- User-submitted scam reports\n- Limited usage analytics to improve performance\nWe do not access personal messages without user permission.</string>
+    <string name="pp_section3_title">3. How We Use Information</string>
+    <string name="pp_section3_body">We use collected information to:\n- Authenticate user accounts\n- Improve scam detection accuracy\n- Enhance user experience and security</string>
+    <string name="pp_section4_title">4. Data Security</string>
+    <string name="pp_section4_body">We implement secure authentication and controlled cloud storage to protect user data from unauthorized access.</string>
+    <string name="pp_section5_title">5. Data Sharing</string>
+    <string name="pp_section5_body">We do not sell or trade user data. Information is only shared when legally required.</string>
+    <string name="pp_section6_title">6. Your Rights</string>
+    <string name="pp_section6_body">Users may update account information or request data deletion by contacting support.</string>
+    <string name="pp_section7_title">7. Contact Us</string>
+    <string name="pp_contact_email">aldrichpayawal3@gmail.com</string>
+
+    <!-- FAQs -->
+    <string name="title_faqs">FAQs</string>
+    <string name="faq_header_common">COMMON QUESTIONS</string>
+    <string name="faq1_q">How does PhishSwish work?</string>
+    <string name="faq1_a">PhishSwish uses advanced machine learning models and pattern detection to analyze SMS content and links for potential security threats like phishing or spam.</string>
+    <string name="faq2_q">Is my data private?</string>
+    <string name="faq2_a">Yes. We only analyze messages you specifically choose to scan. Your personal information is encrypted and never shared with third parties.</string>
+    <string name="faq3_q">What should I do if I receive a scam?</string>
+    <string name="faq3_a">If PhishSwish detects a scam, do not click any links. Delete the message immediately and block the sender\'s number through your phone\'s SMS app.</string>
+    <string name="faq4_q">Can PhishSwish read my messages?</string>
+    <string name="faq4_a">PhishSwish only accesses your inbox when you open the \'Inbox Scan\' tool. Analysis is performed on-device to ensure your private conversations stay private.</string>
+    <string name="faq_still_questions">Still have questions?</string>
+    <string name="faq_support_help">Our support team is here to help you.</string>
+    <string name="btn_contact_support">Contact Support</string>
+
+    <!-- About Us -->
+    <string name="title_about_us">About PhishSwish</string>
+    <string name="about_meet_team">Meet the Team</string>
+    <string name="about_role_android">Android Developer</string>
+    <string name="about_role_ui">UI/UX Designer</string>
+    <string name="about_role_backend">Backend &amp; Firebase Engineer</string>
+    <string name="about_role_qa">Quality Assurance &amp; Security Analyst</string>
+    <string name="about_bio_john">Leads mobile development, focusing on secure sign‑in, smooth navigation, and a stable experience.</string>
+    <string name="about_bio_rome">Designs simple, clear screens and flows so PhishSwish feels easy to use every day.</string>
+    <string name="about_bio_ven">Builds and maintains secure backend services and data connections that power PhishSwish.</string>
+    <string name="about_bio_prince">Conducts testing, validates performance, and evaluates app security to ensure reliability.</string>
+    <string name="about_edu_tip">3rd Year BSIT Student – TIP Manila</string>
+    <string name="about_edu_regular">3rd Year BSIT Student</string>
+    <!-- Dialogs -->
+    <string name="dialog_confirm_link_open_title">Confirm Link Open</string>
+    <string name="dialog_confirm_link_open_message">Are you sure you want to open this link? The site may be unsafe or malicious.</string>
+    <string name="msg_ai_unavailable">AI analysis temporarily unavailable. Please try again later.</string>
+    <string name="msg_no_internet_retry">No internet connection. Please try again later.</string>
+    <string name="sender_unknown">Unknown</string>
+    <string name="label_date">Date</string>
+    
+    <!-- Camera Scanning -->
+    <string name="title_camera_scan">Camera Scanning</string>
+    <string name="msg_point_camera">Point the camera at a message</string>
+    <string name="msg_scanning_text">Scanning text...</string>
+    <string name="msg_text_detected">Text detected. Tap Analyze.</string>
+    <string name="msg_no_text_detected">No readable text detected</string>
+    <string name="tip_improve_lighting">Improve lighting</string>
+    <string name="tip_move_closer">Move closer to the message</string>
+    <string name="tip_hold_steady">Hold device steady</string>
+    <string name="tip_align_frame">Align text inside the frame</string>
+    <string name="label_detected_text">Detected Text</string>
+    <string name="tip_scan_instruction">Tip: Scan an SMS, email, paper, or on-screen message.</string>
+    <string name="btn_analyze">Analyze</string>
+    <string name="msg_waiting_detection">Waiting for text detection</string>
+    <string name="tip_frozen_instruction">Tap or drag words to highlight</string>
+    
+    <!-- Overlay Labels -->
+    <string name="overlay_url_detected">Suspicious URL detected</string>
+    <string name="overlay_otp_detected">OTP request detected</string>
+    <string name="overlay_urgency_detected">Urgency tactic detected</string>
+    <string name="overlay_brand_detected">Brand mention detected</string>
+    <string name="overlay_likely_safe">Looks safe</string>
+    
+    <string name="btn_yes_open">Yes, Open</string>
+    <string name="dialog_google_signin_error_message">Looks like you haven\'t linked this Google account yet or you are not registered. Please sign up normally first.</string>
+    <string name="dialog_sync_google_title">Sync Google account?</string>
+    <string name="dialog_sync_google_message">Do you want to sync your Google account details with your profile?</string>
+    <string name="btn_skip">Skip</string>
+
+    <string name="dialog_welcome_back_title">Welcome Back</string>
+    <string name="dialog_welcome_back_message">You are successfully signed in.</string>
+    <string name="dialog_account_synced_title">Account Synced</string>
+    <string name="dialog_account_synced_message">Your profile has been synchronized with your Google account.</string>
+    <string name="dialog_allow_inbox_title">Allow Inbox Scan?</string>
+    <string name="dialog_allow_inbox_message">PhishSwish needs access to your SMS messages to scan for phishing links. We do not store your personal messages.</string>
+    <string name="btn_later">Later</string>
+    <string name="dialog_message_from">Message from: %1$s</string>
+    <string name="dialog_confirm_scan_title">Confirm Scan</string>
+    <string name="dialog_confirm_scan_message">Are you sure you want to scan this message?</string>
+
+    <string name="dialog_delete_item_title">Delete Item</string>
+    <string name="dialog_delete_item_message">Are you sure you want to remove this scan from your history?</string>
+    <string name="dialog_delete_history_title">Delete History</string>
+    <string name="dialog_delete_history_message">Are you sure you want to delete all your history? This action cannot be undone.</string>
+    <string name="btn_close">Close</string>
+    <string name="btn_scan_now">Scan Now</string>
+    <string name="dialog_login_successful_title">Login Successful</string>
+
+    <!-- Source Filtering -->
+    <string name="title_filter_source">Filter by Source</string>
+    <string name="source_all">All</string>
+    <string name="source_paste">Paste Scan</string>
+    <string name="source_inbox">Inbox Scan</string>
+    <string name="source_ar">Camera Scan</string>
 </resources>

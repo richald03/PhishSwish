@@ -5,6 +5,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.example.phishswish.utils.GeminiKeyManager;
 import java.io.IOException;
 
 import okhttp3.MediaType;
@@ -39,10 +40,18 @@ public class GeminiClient {
     }
 
     public void analyze(String apiKey, String prompt, Callback cb) {
+        analyzeWithFallback(apiKey, null, prompt, cb);
+    }
+
+    public void analyzeWithFallback(String apiKey, GeminiKeyManager keyManager, String prompt, Callback cb) {
         new Thread(() -> {
             try {
-                Log.d("GeminiClient", "Using model: " + MODEL);
-                Log.d("GeminiClient", "Sending Gemini request...");
+                if (keyManager != null) {
+                    Log.d(TAG, "Gemini request using key #" + (keyManager.getCurrentIndex() + 1));
+                } else {
+                    Log.d(TAG, "Gemini request using provided key");
+                }
+                Log.d(TAG, "Using model: " + MODEL);
 
                 JSONObject body = new JSONObject();
                 JSONArray contents = new JSONArray();
@@ -70,7 +79,21 @@ public class GeminiClient {
                 Log.d("GeminiClient", "Gemini HTTP=" + response.code());
 
                 if (!response.isSuccessful()) {
-                    if (response.code() == 429) {
+                    String errorBody = response.body() != null ? response.body().string() : "";
+                    Log.e(TAG, "Gemini error body: " + errorBody);
+
+                    boolean isQuotaExceeded = response.code() == 429 || 
+                                             errorBody.toLowerCase().contains("quota exceeded") || 
+                                             errorBody.toLowerCase().contains("rate limit exceeded");
+
+                    if (isQuotaExceeded && keyManager != null && keyManager.hasMoreKeys()) {
+                        Log.w(TAG, "Quota exceeded on key #" + (keyManager.getCurrentIndex() + 1) + ", switching to next key...");
+                        keyManager.moveToNextKey();
+                        analyzeWithFallback(keyManager.getCurrentKey(), keyManager, prompt, cb);
+                        return;
+                    }
+
+                    if (response.code() == 429 || isQuotaExceeded) {
                         cb.onError("AI analysis limit reached for now. Please rely on the detected patterns and try again later.");
                     } else if (response.code() == 401 || response.code() == 403) {
                         cb.onError("AI Analysis is not configured properly. Please contact support.");

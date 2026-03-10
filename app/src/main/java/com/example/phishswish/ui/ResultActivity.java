@@ -31,15 +31,18 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.phishswish.BuildConfig;
 import com.example.phishswish.R;
 import com.example.phishswish.detector.GeminiClient;
-import com.example.phishswish.detector.GeminiModelsDebug;
+
 import com.example.phishswish.detector.VirusTotalClient;
 import com.example.phishswish.detector.VtParser;
 import com.example.phishswish.firebase.FirestoreService;
 import com.example.phishswish.model.GeminiAnalysisResult;
 import com.example.phishswish.model.ScanResult;
+import com.example.phishswish.utils.LanguageManager;
 import com.example.phishswish.utils.PercentageUtils;
 import com.example.phishswish.utils.UrlExtractor;
+import com.example.phishswish.utils.SenderDetector;
 import com.example.phishswish.utils.VtCache;
+import com.example.phishswish.utils.GeminiKeyManager;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import android.content.Context;
 
@@ -101,12 +104,9 @@ public class ResultActivity extends BaseActivity {
 
         boolean fromHistory = getIntent().getBooleanExtra("fromHistory", false);
 
-        String sender = getIntent().getStringExtra("sender");
-        if (sender == null || sender.trim().isEmpty()) {
-            sender = "Unknown";
-        }
+        String sender = SenderDetector.normalize(this, getIntent().getStringExtra("sender"));
         if (tvSender != null) {
-            tvSender.setText("Sender: " + sender);
+            tvSender.setText(getString(R.string.label_sender_prefix) + sender);
         }
 
         if (fromHistory) {
@@ -114,7 +114,6 @@ public class ResultActivity extends BaseActivity {
         } else {
             scanResult = (ScanResult) getIntent().getSerializableExtra("scan_result");
             if (scanResult != null) {
-                if (scanResult.getIndicators() == null) scanResult.setIndicators(new ArrayList<>());
                 if (scanResult.getUrls() == null) scanResult.setUrls(new ArrayList<>());
 
                 showLoading();
@@ -123,16 +122,35 @@ public class ResultActivity extends BaseActivity {
                 }
 
                 String messageText = scanResult.getSnippet();
-                String extractedUrl = UrlExtractor.extractFirstUrl(messageText);
-                if (extractedUrl != null) {
+                String extractedUrl = null;
+                if (!scanResult.getUrls().isEmpty()) {
+                    extractedUrl = scanResult.getUrls().get(0);
+                } else {
+                    extractedUrl = UrlExtractor.extractFirstUrl(messageText);
+                    if (extractedUrl != null && !extractedUrl.isEmpty()) {
+                        scanResult.getUrls().add(extractedUrl);
+                    }
+                }
+                if (extractedUrl != null && !extractedUrl.trim().isEmpty()) {
                     checkLink(extractedUrl);
                 }
 
                 // Trigger Gemini AI Analysis for new scan
                 runGeminiAi(scanResult);
             } else {
-                Toast.makeText(this, "No result data found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.msg_no_result), Toast.LENGTH_SHORT).show();
                 finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onOnlineStateChanged(boolean isOnline) {
+        super.onOnlineStateChanged(isOnline);
+        if (isOnline && currentState == UiState.ERROR) {
+            // Auto-retry if we were in error state
+            if (scanResult != null && !getIntent().getBooleanExtra("fromHistory", false)) {
+                runGeminiAi(scanResult);
             }
         }
     }
@@ -145,7 +163,8 @@ public class ResultActivity extends BaseActivity {
             return;
         }
 
-        if (BuildConfig.GEMINI_API_KEY == null || BuildConfig.GEMINI_API_KEY.trim().isEmpty()) {
+        GeminiKeyManager keyManager = new GeminiKeyManager();
+        if (keyManager.getKeyCount() == 0) {
             showError("AI Analysis is not configured properly. Please contact support.");
             return;
         }
@@ -153,10 +172,7 @@ public class ResultActivity extends BaseActivity {
         String msg = result.getSnippet() != null ? result.getSnippet() : "";
         if (msg.length() > 600) msg = msg.substring(0, 600) + "...";
 
-        String sender = getIntent().getStringExtra("sender");
-        if (sender == null || sender.trim().isEmpty()) {
-            sender = "Unknown";
-        }
+        String sender = SenderDetector.normalize(this, getIntent().getStringExtra("sender"));
 
         String label = result.getLabel() != null ? result.getLabel() : "UNKNOWN";
         int conf = PercentageUtils.toInt(result.getConfidence());
@@ -167,15 +183,6 @@ public class ResultActivity extends BaseActivity {
         }
 
         String urlStatus = (tvLinkStatus != null) ? tvLinkStatus.getText().toString() : "Link Status: UNKNOWN";
-
-        String indicators = "";
-        if (result.getIndicators() != null && !result.getIndicators().isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            for (String s : result.getIndicators()) sb.append("- ").append(s).append("\n");
-            indicators = sb.toString();
-        } else {
-            indicators = "- None detected\n";
-        }
 
         String prompt =
                 "You are a cybersecurity message classification engine for a mobile scam detection app.\n\n" +
@@ -229,12 +236,7 @@ public class ResultActivity extends BaseActivity {
                 "{\n" +
                 "  \"category\": \"SAFE | SPAM | SCAM\",\n" +
                 "  \"certainty\": 0-100,\n" +
-                "  \"risk_level\": \"LOW | MEDIUM | HIGH\",\n" +
-                "  \"reasoning\": \"Clear concise explanation (2-4 sentences)\",\n" +
-                "  \"detected_signals\": [\n" +
-                "    \"signal 1\",\n" +
-                "    \"signal 2\"\n" +
-                "  ]\n" +
+                "  \"why\": \"short explanation of why the message is classified this way\"\n" +
                 "}\n\n" +
                 "Rules:\n" +
                 "- certainty must be integer 0-100.\n" +
@@ -246,8 +248,18 @@ public class ResultActivity extends BaseActivity {
                 "Sender: " + sender + "\n" +
                 "Message: " + msg + "\n";
 
+        // Append language instruction so Gemini returns reasoning in the selected language.
+        String appLang = LanguageManager.getLanguage(this);
+        if ("tl".equals(appLang)) {
+            prompt += "\nIMPORTANT: Write the \"why\" field in Filipino/Tagalog. " +
+                      "Keep \"category\" and \"certainty\" values exactly as specified (SAFE/SPAM/SCAM, integer).\n";
+        } else {
+            prompt += "\nIMPORTANT: Write the \"why\" field in English.\n";
+        }
+
+
         GeminiClient client = new GeminiClient();
-        client.analyze(BuildConfig.GEMINI_API_KEY, prompt, new GeminiClient.Callback() {
+        client.analyzeWithFallback(keyManager.getCurrentKey(), keyManager, prompt, new GeminiClient.Callback() {
             @Override
             public void onSuccess(String analysis, String recommendation) {
                 // analysis now contains the raw JSON payload from Gemini.
@@ -275,15 +287,8 @@ public class ResultActivity extends BaseActivity {
         });
     }
 
-    private String joinTips(GeminiAnalysisResult gemini) {
-        if (gemini == null || gemini.getTips() == null || gemini.getTips().isEmpty()) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String tip : gemini.getTips()) {
-            sb.append("• ").append(tip.trim()).append("\n");
-        }
-        return sb.toString().trim();
+    private String getStaticRecommendation() {
+        return "Stay cautious and verify the sender before acting.";
     }
 
     /**
@@ -322,19 +327,13 @@ public class ResultActivity extends BaseActivity {
         }
 
         if (tvRecommendation != null) {
-            String joined = joinTips(result);
-            tvRecommendation.setText(joined.isEmpty()
-                    ? "Stay cautious and verify the sender before acting."
-                    : joined);
+            tvRecommendation.setText(getStaticRecommendation());
         }
 
-        // Use Gemini-detected links if available; otherwise fall back to the
-        // original ScanResult URLs so that the URL section and VirusTotal
+        // Check original ScanResult URLs so that the URL section and VirusTotal
         // status remain visible whenever a URL is present.
         String firstUrl = null;
-        if (result.getDetectedLinks() != null && !result.getDetectedLinks().isEmpty()) {
-            firstUrl = result.getDetectedLinks().get(0);
-        } else if (scanResult != null
+        if (scanResult != null
                 && scanResult.getUrls() != null
                 && !scanResult.getUrls().isEmpty()) {
             firstUrl = scanResult.getUrls().get(0);
@@ -352,7 +351,7 @@ public class ResultActivity extends BaseActivity {
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText("Scanned URL", urlForUi);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(this, "URL copied to clipboard", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_url_copied), Toast.LENGTH_SHORT).show();
                 });
             }
             if (btnOpenLink != null) {
@@ -408,17 +407,19 @@ public class ResultActivity extends BaseActivity {
         currentState = UiState.SUCCESS;
 
         // Auto-save using Gemini as the single source of truth.
-        if (scanResult != null && result != null) {
+        boolean fromHistory = getIntent().getBooleanExtra("fromHistory", false);
+        if (!fromHistory && scanResult != null && result != null) {
             scanResult.setLabel(result.getCategory().name());
             scanResult.setConfidence(result.getCertainty());
-            autoSaveToCloud(scanResult, result.getWhy(), joinTips(result));
+            autoSaveToCloud(scanResult, result.getWhy());
+            com.example.phishswish.utils.DailyScanTracker.increment(this);
         }
 
         renderResult(result);
     }
 
     private void showError() {
-        showError("Unable to analyze right now. Please try again.");
+        showError(getString(R.string.msg_ai_unavailable));
     }
 
     private void showError(String message) {
@@ -455,16 +456,16 @@ public class ResultActivity extends BaseActivity {
         int pillBg;
 
         if ("SAFE".equalsIgnoreCase(label)) {
-            themeColor = Color.parseColor("#16A34A");
-            cardBg = Color.parseColor("#E7F9EF");
+            themeColor = ContextCompat.getColor(this, R.color.safe_blue);
+            cardBg = ContextCompat.getColor(this, R.color.result_safe_bg);
             pillBg = R.drawable.bg_pill_safe;
         } else if ("SPAM".equalsIgnoreCase(label) || "SUSPICIOUS".equalsIgnoreCase(label)) {
-            themeColor = Color.parseColor("#F59E0B");
-            cardBg = Color.parseColor("#FFFBEB");
+            themeColor = ContextCompat.getColor(this, R.color.spam_orange);
+            cardBg = ContextCompat.getColor(this, R.color.result_spam_bg);
             pillBg = R.drawable.bg_pill_suspicious;
         } else {
-            themeColor = Color.parseColor("#DC2626");
-            cardBg = Color.parseColor("#FEE2E2");
+            themeColor = ContextCompat.getColor(this, R.color.scam_red);
+            cardBg = ContextCompat.getColor(this, R.color.result_scam_bg);
             pillBg = R.drawable.bg_pill_malicious;
         }
 
@@ -520,40 +521,59 @@ public class ResultActivity extends BaseActivity {
                 String json = client.getUrlReport(finalUrl);
                 VtCache.save(this, finalUrl, json);
                 VtParser.Result result = VtParser.parse(finalUrl, json);
-                runOnUiThread(() -> updateLinkUi(result.status));
+                String normalized = result.status != null ? result.status.toLowerCase(java.util.Locale.ROOT) : "unknown";
+                runOnUiThread(() -> updateLinkUi(normalized));
             } catch (Exception e) {
-                runOnUiThread(() -> { if (tvLinkStatus != null) tvLinkStatus.setText("Link Status: UNKNOWN"); });
+                runOnUiThread(() -> updateLinkUi("unknown"));
             }
         }).start();
     }
 
     private void updateLinkUi(String status) {
-        if (tvLinkStatus == null) return;
-        tvLinkStatus.setText("Link Status: " + status);
-        if ("SAFE".equalsIgnoreCase(status)) {
+        if (tvLinkStatus == null || status == null) return;
+        
+        String cleanStatus = status.trim().toLowerCase(java.util.Locale.ROOT);
+        if (!cleanStatus.equals("safe") && !cleanStatus.equals("harmful")) {
+            cleanStatus = "unknown";
+        }
+        
+        tvLinkStatus.setVisibility(View.VISIBLE);
+        String displayStatus = cleanStatus.substring(0, 1).toUpperCase(java.util.Locale.ROOT) + cleanStatus.substring(1);
+        tvLinkStatus.setText("Link Status: " + displayStatus);
+        
+        if ("safe".equals(cleanStatus)) {
             tvLinkStatus.setTextColor(Color.parseColor("#16A34A"));
-        } else if ("HARMFUL".equalsIgnoreCase(status)) {
+        } else if ("harmful".equals(cleanStatus)) {
             tvLinkStatus.setTextColor(Color.parseColor("#DC2626"));
         } else {
             tvLinkStatus.setTextColor(Color.GRAY);
         }
+        
+        boolean fromHistory = getIntent().getBooleanExtra("fromHistory", false);
+        if (!fromHistory && scanResult != null) {
+            com.example.phishswish.firebase.FirestoreService.updateLinkStatus(String.valueOf(scanResult.getTimestamp()), cleanStatus);
+        }
     }
 
-    private void autoSaveToCloud(ScanResult result, String aiAnalysis, String aiRecommendation) {
+    private void autoSaveToCloud(ScanResult result, String aiAnalysis) {
         if (!isOnline()) return;
         long ts = result.getTimestamp();
-        if (ts == 0) ts = System.currentTimeMillis();
+        if (ts == 0) {
+            ts = System.currentTimeMillis();
+            result.setTimestamp(ts);
+        }
         String snippet = result.getSnippet();
         if (snippet != null && snippet.length() > 120) {
             snippet = snippet.substring(0, 117) + "...";
         }
         String extractedUrl = (result.getUrls() != null && !result.getUrls().isEmpty())
                 ? result.getUrls().get(0) : "";
-        String sender = getIntent().getStringExtra("sender");
-        if (sender == null || sender.trim().isEmpty()) sender = "Unknown";
+        String sender = SenderDetector.normalize(this, getIntent().getStringExtra("sender"));
 
-        FirestoreService.autoSaveScan(snippet, result.getLabel(), (int) result.getConfidence(),
-                result.getIndicators(), ts, extractedUrl, aiAnalysis, aiRecommendation, sender);
+    String source = getIntent().getStringExtra("source");
+
+    FirestoreService.autoSaveScan(snippet, result.getLabel(), (int) result.getConfidence(),
+            new ArrayList<>(), ts, extractedUrl, aiAnalysis, null, sender, source, result.getUrls());
     }
 
     private void handleHistoryMode() {
@@ -561,45 +581,55 @@ public class ResultActivity extends BaseActivity {
         String label = getIntent().getStringExtra("label");
         int confidence = PercentageUtils.clampInt(getIntent().getIntExtra("confidence", 0));
         String snippet = getIntent().getStringExtra("snippet");
-        ArrayList<String> indicators = getIntent().getStringArrayListExtra("indicators");
-        if (indicators == null) indicators = new ArrayList<>();
         String extractedUrl = getIntent().getStringExtra("extractedUrl");
 
         if (tvSnippet != null && snippet != null) {
             tvSnippet.setText(snippet);
         }
-        if (extractedUrl != null && !extractedUrl.isEmpty()) {
-            checkLink(extractedUrl);
+        
+        String linkStatus = getIntent().getStringExtra("link_status");
+        if (linkStatus != null && !linkStatus.trim().isEmpty() && tvLinkStatus != null) {
+            updateLinkUi(linkStatus);
+        } else if (tvLinkStatus != null) {
+            tvLinkStatus.setVisibility(View.GONE);
         }
+
+        ArrayList<String> detectedLinks = getIntent().getStringArrayListExtra("detected_links");
+        ArrayList<String> allLinks = new ArrayList<>();
+        if (extractedUrl != null && !extractedUrl.isEmpty()) {
+            allLinks.add(extractedUrl);
+        }
+        if (detectedLinks != null) {
+            for (String link : detectedLinks) {
+                if (!allLinks.contains(link)) {
+                    allLinks.add(link);
+                }
+            }
+        }
+
+        scanResult = new ScanResult();
+        scanResult.setUrls(allLinks);
+        scanResult.setSnippet(snippet);
+        scanResult.setLabel(label);
+        scanResult.setConfidence(confidence);
+        long ts = getIntent().getLongExtra("timestamp", 0);
+        scanResult.setTimestamp(ts);
 
         try {
             GeminiAnalysisResult.Category cat = GeminiAnalysisResult.Category.valueOf(
                     label != null ? label.toUpperCase(Locale.ROOT) : "SPAM"
             );
+            String aiAnalysis = getIntent().getStringExtra("aiAnalysis");
             GeminiAnalysisResult model = GeminiAnalysisResult.fromValues(
                     cat,
                     confidence,
-                    "", // explanation text is shown from saved aiAnalysis below
+                    aiAnalysis != null ? aiAnalysis : "", // Uses stored AI explanation
                     new ArrayList<>(),
-                    extractedUrl != null && !extractedUrl.isEmpty()
-                            ? java.util.Collections.singletonList(extractedUrl)
-                            : new ArrayList<>()
+                    allLinks
             );
             showSuccess(model);
         } catch (Exception e) {
             showError("AI analysis for this entry is not available.");
-        }
-
-        // Override AI text from stored strings if present.
-        String aiAnalysis = getIntent().getStringExtra("aiAnalysis");
-        String aiRecommendation = getIntent().getStringExtra("aiRecommendation");
-        if (aiAnalysis != null && !aiAnalysis.isEmpty() && tvReasons != null) {
-            tvReasons.setText(aiAnalysis);
-            tvReasons.setVisibility(View.VISIBLE);
-        }
-        if (aiRecommendation != null && !aiRecommendation.isEmpty() && tvRecommendation != null) {
-            tvRecommendation.setText(aiRecommendation);
-            tvRecommendation.setVisibility(View.VISIBLE);
         }
     }
 
@@ -614,18 +644,18 @@ public class ResultActivity extends BaseActivity {
         }
 
         new AlertDialog.Builder(this)
-                .setTitle("Confirm Link Open")
-                .setMessage(spannableMessage)
-                .setPositiveButton("Yes, Open", (dialog, which) -> {
+                .setTitle(getString(R.string.dialog_confirm_link_open_title))
+                .setMessage(getString(R.string.dialog_confirm_link_open_message))
+                .setPositiveButton(getString(R.string.btn_yes_open), (dialog, which) -> {
                     try {
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setData(Uri.parse(url));
                         startActivity(i);
                     } catch (Exception e) {
-                        Toast.makeText(this, "Could not open URL", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.msg_cannot_open_url), Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(getString(R.string.btn_no), (dialog, which) -> dialog.dismiss())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }

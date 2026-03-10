@@ -13,7 +13,12 @@ if (localPropertiesFile.exists()) {
 }
 
 // STEP 2 - Define API keys (preferring project properties as requested, with local.properties fallback)
-val GEMINI_API_KEY: String = (project.findProperty("GEMINI_API_KEY") ?: localProperties.getProperty("GEMINI_API_KEY") ?: "").toString()
+val GEMINI_API_KEY_1: String = (project.findProperty("GEMINI_API_KEY_1") ?: localProperties.getProperty("GEMINI_API_KEY_1") ?: "").toString()
+val GEMINI_API_KEY_2: String = (project.findProperty("GEMINI_API_KEY_2") ?: localProperties.getProperty("GEMINI_API_KEY_2") ?: "").toString()
+val GEMINI_API_KEY_3: String = (project.findProperty("GEMINI_API_KEY_3") ?: localProperties.getProperty("GEMINI_API_KEY_3") ?: "").toString()
+val GEMINI_API_KEY_4: String = (project.findProperty("GEMINI_API_KEY_4") ?: localProperties.getProperty("GEMINI_API_KEY_4") ?: "").toString()
+val GEMINI_API_KEY_5: String = (project.findProperty("GEMINI_API_KEY_5") ?: localProperties.getProperty("GEMINI_API_KEY_5") ?: "").toString()
+val GEMINI_API_KEY_6: String = (project.findProperty("GEMINI_API_KEY_6") ?: localProperties.getProperty("GEMINI_API_KEY_6") ?: "").toString()
 val vtApiKey: String = (project.findProperty("VT_API_KEY") ?: localProperties.getProperty("VT_API_KEY") ?: "").toString()
 
 android {
@@ -31,7 +36,12 @@ android {
 
         // Inject the API keys into BuildConfig
         buildConfigField("String", "VT_API_KEY", "\"$vtApiKey\"")
-        buildConfigField("String", "GEMINI_API_KEY", "\"$GEMINI_API_KEY\"")
+        buildConfigField("String", "GEMINI_API_KEY_1", "\"$GEMINI_API_KEY_1\"")
+        buildConfigField("String", "GEMINI_API_KEY_2", "\"$GEMINI_API_KEY_2\"")
+        buildConfigField("String", "GEMINI_API_KEY_3", "\"$GEMINI_API_KEY_3\"")
+        buildConfigField("String", "GEMINI_API_KEY_4", "\"$GEMINI_API_KEY_4\"")
+        buildConfigField("String", "GEMINI_API_KEY_5", "\"$GEMINI_API_KEY_5\"")
+        buildConfigField("String", "GEMINI_API_KEY_6", "\"$GEMINI_API_KEY_6\"")
     }
 
     buildFeatures {
@@ -77,6 +87,18 @@ dependencies {
     // Navigation Component
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+
+    // CameraX
+    implementation(libs.camera.core)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+
+    // ML Kit OCR
+    implementation(libs.mlkit.text.recognition)
+    
+    // Guava for ListenableFuture
+    implementation(libs.guava)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

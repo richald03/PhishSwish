@@ -18,11 +18,11 @@ public class FaqsActivity extends BaseActivity {
         setContentView(R.layout.activity_faqs);
 
         setupFaqInteractions();
-        setupNavigation();
+
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         findViewById(R.id.btnContactSupport).setOnClickListener(v -> 
-            Toast.makeText(this, "Opening support channel...", Toast.LENGTH_SHORT).show());
+            Toast.makeText(this, getString(R.string.msg_opening_support), Toast.LENGTH_SHORT).show());
     }
 
     private void setupFaqInteractions() {
@@ -44,29 +44,5 @@ public class FaqsActivity extends BaseActivity {
         });
     }
 
-    private void setupNavigation() {
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        if (bottomNav != null) {
-            bottomNav.setSelectedItemId(R.id.nav_faqs);
-            bottomNav.setOnItemSelectedListener(item -> {
-                int id = item.getItemId();
-                if (id == R.id.nav_faqs) return true;
 
-                Intent intent = null;
-                // Placeholders for other activities
-                if (id == R.id.nav_privacy) {
-                    Toast.makeText(this, "Privacy Policy screen coming soon", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.nav_about) {
-                    Toast.makeText(this, "About screen coming soon", Toast.LENGTH_SHORT).show();
-                }
-
-                if (intent != null) {
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent);
-                    return true;
-                }
-                return false;
-            });
-        }
-    }
 }

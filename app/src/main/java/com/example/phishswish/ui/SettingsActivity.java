@@ -30,6 +30,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
 
 import com.example.phishswish.R;
+import com.example.phishswish.utils.LanguageManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -51,6 +52,7 @@ import java.util.Map;
 public class SettingsActivity extends BaseActivity {
 
     private ImageView ivAvatar;
+    private TextView tvLanguageSubtitle;
     private ProgressBar navProgress;
     private BottomNavigationView bottomNav;
 
@@ -70,7 +72,7 @@ public class SettingsActivity extends BaseActivity {
                 if (isGranted) {
                     openGallery();
                 } else {
-                    Toast.makeText(this, "Permission denied to access gallery", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_permission_denied), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -123,30 +125,28 @@ public class SettingsActivity extends BaseActivity {
         // FAQs navigation
         View llFaqs = findViewById(R.id.llFaqs);
         if (llFaqs != null) {
-            llFaqs.setOnClickListener(v -> {
-                Intent i = new Intent(this, FaqsActivity.class);
-                startActivity(i);
-            });
+            llFaqs.setOnClickListener(v -> navigateWithLoading(FaqsActivity.class));
         }
 
         View llPrivacy = findViewById(R.id.llPrivacyPolicy);
         if (llPrivacy != null) {
-            llPrivacy.setOnClickListener(v -> {
-                Intent i = new Intent(this, PrivacyPolicyActivity.class);
-                startActivity(i);
-            });
+            llPrivacy.setOnClickListener(v -> navigateWithLoading(PrivacyPolicyActivity.class));
         }
 
         View llAbout = findViewById(R.id.llAboutUs);
         if (llAbout != null) {
-            llAbout.setOnClickListener(v -> {
-                Intent i = new Intent(this, AboutUsActivity.class);
-                startActivity(i);
-            });
+            llAbout.setOnClickListener(v -> navigateWithLoading(AboutUsActivity.class));
         }
 
         bottomNav = findViewById(R.id.bottom_navigation);
         BottomNavHelper.setup(this, bottomNav, navProgress, R.id.nav_settings);
+
+        View llLanguage = findViewById(R.id.llLanguage);
+        tvLanguageSubtitle = findViewById(R.id.tvLanguageSubtitle);
+        if (llLanguage != null) {
+            llLanguage.setOnClickListener(v -> showLanguageDialog());
+        }
+        updateLanguageSubtitle();
 
         View llGlobalDeleting = findViewById(R.id.llGlobalDeleting);
         if (llGlobalDeleting != null) {
@@ -172,10 +172,10 @@ public class SettingsActivity extends BaseActivity {
 
     private void showChangePasswordConfirmation() {
         new AlertDialog.Builder(this)
-                .setTitle("Change Password")
-                .setMessage("Are you sure you want to change your password?")
-                .setPositiveButton("Yes", (dialog, which) -> showVerifyCurrentPasswordDialog())
-                .setNegativeButton("No", null)
+                .setTitle(getString(R.string.dialog_change_password_title))
+                .setMessage(getString(R.string.dialog_change_password_message))
+                .setPositiveButton(getString(R.string.btn_yes), (dialog, which) -> showVerifyCurrentPasswordDialog())
+                .setNegativeButton(getString(R.string.btn_no), null)
                 .show();
     }
 
@@ -184,7 +184,7 @@ public class SettingsActivity extends BaseActivity {
         if (user == null || user.getEmail() == null) return;
 
         TextInputLayout til = new TextInputLayout(this);
-        til.setHint("Current Password");
+        til.setHint(getString(R.string.hint_current_password));
         til.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
         til.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
         til.setBoxCornerRadii(12, 12, 12, 12);
@@ -200,18 +200,18 @@ public class SettingsActivity extends BaseActivity {
         container.addView(til);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Verify Identity")
-                .setMessage("Please enter your current password to proceed.")
+                .setTitle(getString(R.string.dialog_verify_identity_title))
+                .setMessage(getString(R.string.dialog_verify_identity_message))
                 .setView(container)
-                .setPositiveButton("Verify", null)
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton(getString(R.string.btn_verify), null)
+                .setNegativeButton(getString(R.string.btn_cancel), null)
                 .create();
 
         dialog.setOnShowListener(d -> {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                 String password = et.getText() != null ? et.getText().toString() : "";
                 if (password.isEmpty()) {
-                    til.setError("Password cannot be empty");
+                    til.setError(getString(R.string.error_password_empty));
                     return;
                 }
 
@@ -221,7 +221,7 @@ public class SettingsActivity extends BaseActivity {
                         dialog.dismiss();
                         showNewPasswordDialog();
                     } else {
-                        til.setError("Incorrect current password");
+                        til.setError(getString(R.string.error_password_incorrect));
                     }
                 });
             });
@@ -234,7 +234,7 @@ public class SettingsActivity extends BaseActivity {
         if (user == null) return;
 
         TextInputLayout til = new TextInputLayout(this);
-        til.setHint("New Password");
+        til.setHint(getString(R.string.hint_new_password));
         til.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
         til.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
         til.setBoxCornerRadii(12, 12, 12, 12);
@@ -250,27 +250,27 @@ public class SettingsActivity extends BaseActivity {
         container.addView(til);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Update Password")
-                .setMessage("Enter your new password below.")
+                .setTitle(getString(R.string.dialog_update_password_title))
+                .setMessage(getString(R.string.dialog_update_password_message))
                 .setView(container)
-                .setPositiveButton("Update", null)
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton(getString(R.string.btn_update), null)
+                .setNegativeButton(getString(R.string.btn_cancel), null)
                 .create();
 
         dialog.setOnShowListener(d -> {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                 String newPass = et.getText() != null ? et.getText().toString() : "";
                 if (newPass.length() < 6) {
-                    til.setError("Password must be at least 6 characters");
+                    til.setError(getString(R.string.error_password_too_short));
                     return;
                 }
 
                 user.updatePassword(newPass).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(this, "Password updated successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.msg_password_updated), Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     } else {
-                        Toast.makeText(this, "Failed to update password.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.msg_password_update_failed), Toast.LENGTH_SHORT).show();
                     }
                 });
             });
@@ -280,10 +280,10 @@ public class SettingsActivity extends BaseActivity {
 
     private void showLogoutConfirmation() {
         new AlertDialog.Builder(this)
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to log out?")
-                .setPositiveButton("Yes", (dialog, which) -> performLogout())
-                .setNegativeButton("No", null)
+                .setTitle(getString(R.string.dialog_logout_title))
+                .setMessage(getString(R.string.dialog_logout_message))
+                .setPositiveButton(getString(R.string.btn_yes), (dialog, which) -> performLogout())
+                .setNegativeButton(getString(R.string.btn_no), null)
                 .show();
     }
 
@@ -293,8 +293,6 @@ public class SettingsActivity extends BaseActivity {
             return;
         }
         setNavLoading(true);
-        findViewById(R.id.clHeader).setVisibility(View.GONE);
-        findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
 
         // Use a slight delay to show the blue progress bar
         new android.os.Handler().postDelayed(() -> {
@@ -321,17 +319,17 @@ public class SettingsActivity extends BaseActivity {
 
         if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
             new AlertDialog.Builder(this)
-                    .setTitle("Access Gallery")
-                    .setMessage("Do you want to open your gallery to select a profile picture?")
-                    .setPositiveButton("Open", (dialog, which) -> openGallery())
-                    .setNegativeButton("Cancel", null)
+                    .setTitle(getString(R.string.dialog_access_gallery_title))
+                    .setMessage(getString(R.string.dialog_access_gallery_message))
+                    .setPositiveButton(getString(R.string.btn_open), (dialog, which) -> openGallery())
+                    .setNegativeButton(getString(R.string.btn_cancel), null)
                     .show();
         } else {
             new AlertDialog.Builder(this)
-                    .setTitle("Permission Required")
-                    .setMessage("PhishSwish needs access to your gallery to let you upload a profile picture. Would you like to grant permission?")
-                    .setPositiveButton("Allow", (dialog, which) -> requestPermissionLauncher.launch(permission))
-                    .setNegativeButton("Not Now", null)
+                    .setTitle(getString(R.string.dialog_permission_title))
+                    .setMessage(getString(R.string.dialog_permission_message))
+                    .setPositiveButton(getString(R.string.btn_allow), (dialog, which) -> requestPermissionLauncher.launch(permission))
+                    .setNegativeButton(getString(R.string.btn_not_now), null)
                     .show();
         }
     }
@@ -349,7 +347,7 @@ public class SettingsActivity extends BaseActivity {
             String base64Image = encodeImage(bitmap);
             saveImageToFirestore(base64Image);
         } catch (Exception e) {
-            Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.msg_image_load_failed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -376,7 +374,7 @@ public class SettingsActivity extends BaseActivity {
                 .collection("profile")
                 .document("info")
                 .update(data)
-                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Profile updated", Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(aVoid -> Toast.makeText(this, getString(R.string.msg_profile_updated), Toast.LENGTH_SHORT).show());
     }
 
     private void loadUserProfile() {
@@ -409,29 +407,63 @@ public class SettingsActivity extends BaseActivity {
                 });
     }
 
-    private void showFilterDeleteDialog() {
-        final String[] options = {"Spam messages", "Scam messages"};
-        final boolean[] checked = {false, false};
+    private void updateLanguageSubtitle() {
+        if (tvLanguageSubtitle == null) return;
+        String lang = LanguageManager.getLanguage(this);
+        tvLanguageSubtitle.setText("tl".equals(lang)
+                ? getString(R.string.pref_language_subtitle_tl)
+                : getString(R.string.pref_language_subtitle_en));
+    }
+
+    private void showLanguageDialog() {
+        String currentLang = LanguageManager.getLanguage(this);
+        final String[] languages = {
+                getString(R.string.pref_language_subtitle_en),
+                getString(R.string.pref_language_subtitle_tl)
+        };
+        final String[] codes = {"en", "tl"};
+        int checkedItem = "tl".equals(currentLang) ? 1 : 0;
 
         new AlertDialog.Builder(this)
-                .setTitle("Filter Delete History")
-                .setMultiChoiceItems(options, checked, (dialog, which, isChecked) -> {
-                    checked[which] = isChecked;
-                })
-                .setPositiveButton("Delete", (dialog, which) -> {
-                    boolean deleteSpam = checked[0];
-                    boolean deleteScam = checked[1];
-                    if (!deleteSpam && !deleteScam) {
-                        Toast.makeText(this, "Please select at least one category.", Toast.LENGTH_SHORT).show();
-                        return;
+                .setTitle(getString(R.string.dialog_select_language))
+                .setSingleChoiceItems(languages, checkedItem, (dialog, which) -> {
+                    String selectedCode = codes[which];
+                    if (!selectedCode.equals(LanguageManager.getLanguage(this))) {
+                        LanguageManager.setLocale(this, selectedCode);
+                        dialog.dismiss();
+                        recreate();
+                    } else {
+                        dialog.dismiss();
                     }
-                    deleteFilteredHistory(deleteSpam, deleteScam);
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.btn_cancel), null)
                 .show();
     }
 
-    private void deleteFilteredHistory(boolean deleteSpam, boolean deleteScam) {
+    private void showFilterDeleteDialog() {
+        final String[] options = {getString(R.string.filter_option_safe), getString(R.string.filter_option_spam), getString(R.string.filter_option_scam)};
+        final boolean[] checked = {false, false, false};
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.dialog_filter_delete_title))
+                .setMultiChoiceItems(options, checked, (dialog, which, isChecked) -> {
+                    checked[which] = isChecked;
+                })
+                .setPositiveButton(getString(R.string.btn_delete), (dialog, which) -> {
+                    boolean deleteSafe = checked[0];
+                    boolean deleteSpam = checked[1];
+                    boolean deleteScam = checked[2];
+                    if (!deleteSpam && !deleteScam && !deleteSafe) {
+                        Toast.makeText(this, getString(R.string.msg_select_at_least_one), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    deleteFilteredHistory(deleteSpam, deleteScam, deleteSafe);
+                })
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+                .show();
+    }
+
+    private void deleteFilteredHistory(boolean deleteSpam, boolean deleteScam, boolean deleteSafe) {
         if (!isOnline()) return;
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -445,12 +477,13 @@ public class SettingsActivity extends BaseActivity {
         java.util.List<String> labels = new java.util.ArrayList<>();
         if (deleteSpam) labels.add("SPAM");
         if (deleteScam) labels.add("SCAM");
+        if (deleteSafe) labels.add("SAFE");
 
         scansRef.whereIn("label", labels)
                 .get()
                 .addOnSuccessListener(query -> {
                     if (query.isEmpty()) {
-                        Toast.makeText(this, "No matching history to delete.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.msg_no_matching_history), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -461,11 +494,11 @@ public class SettingsActivity extends BaseActivity {
 
                     batch.commit()
                             .addOnSuccessListener(aVoid ->
-                                    Toast.makeText(this, "Filtered history cleared.", Toast.LENGTH_SHORT).show())
+                                    Toast.makeText(this, getString(R.string.msg_filtered_history_cleared), Toast.LENGTH_SHORT).show())
                             .addOnFailureListener(e ->
-                                    Toast.makeText(this, "Failed to delete filtered history.", Toast.LENGTH_SHORT).show());
+                                    Toast.makeText(this, getString(R.string.msg_delete_failed), Toast.LENGTH_SHORT).show());
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to fetch history.", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, getString(R.string.msg_fetch_failed), Toast.LENGTH_SHORT).show());
     }
 }

@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.phishswish.R;
 
-public class OnboardingActivity extends AppCompatActivity {
+public class OnboardingActivity extends BaseActivity {
 
     public static final String PREFS = "phishswish_prefs";
     public static final String KEY_ONBOARDING_DONE = "onboarding_done";
@@ -27,7 +27,7 @@ public class OnboardingActivity extends AppCompatActivity {
             SharedPreferences sp = getSharedPreferences(PREFS, MODE_PRIVATE);
             sp.edit().putBoolean(KEY_ONBOARDING_DONE, true).apply();
 
-            startActivity(new Intent(OnboardingActivity.this, LoginActivity.class));
+            navigateWithLoading(LoginActivity.class);
             finish();
         });
     }

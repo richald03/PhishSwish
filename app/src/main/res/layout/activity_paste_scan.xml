@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/app_bg">
 
     <!-- Header -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -94,14 +94,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Quick Analysis"
+                            android:text="@string/paste_scan_card_title"
                             android:textStyle="bold"
                             android:textSize="15sp"
                             android:textColor="@color/text_dark" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Paste suspicious messages, URLs, or email headers below for a real-time phishing audit."
+                            android:text="@string/paste_scan_card_sub"
                             android:textSize="12sp"
                             android:textColor="@color/text_muted" />
                     </LinearLayout>
@@ -127,14 +127,14 @@
                         android:id="@+id/tilSender"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Sender">
+                        android:hint="@string/hint_sender">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etSender"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPersonName"
-                            android:background="#F3F4F6"
+                            android:background="@color/divider"
                             android:textSize="14sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -144,13 +144,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:hint="Message">
+                        android:hint="@string/hint_message">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etMessage"
                             android:layout_width="match_parent"
                             android:layout_height="140dp"
-                            android:background="#F3F4F6"
+                            android:background="@color/divider"
                             android:gravity="top"
                             android:inputType="textMultiLine"
                             android:paddingStart="12dp"
@@ -174,10 +174,11 @@
                     <Button
                         android:id="@+id/btnScan"
                         android:layout_width="match_parent"
-                        android:layout_height="54dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="54dp"
                         android:layout_marginTop="16dp"
                         android:background="@drawable/bg_button_analyze"
-                        android:text="Analyze Content"
+                        android:text="@string/btn_analyze_content"
                         android:textAllCaps="false"
                         android:textColor="@android:color/white"
                         android:textStyle="bold"
@@ -188,10 +189,11 @@
                         android:id="@+id/btnClear"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="match_parent"
-                        android:layout_height="54dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="54dp"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_button_outline_red"
-                        android:text="Clear Input"
+                        android:text="@string/btn_clear_input"
                         android:textAllCaps="false"
                         android:textColor="@color/scam_red"
                         app:icon="@drawable/ic_delete"
@@ -223,7 +225,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
-                    android:text="AI-Powered Detection. No scans yet."
+                    android:text="@string/label_ai_powered"
                     android:textColor="@color/text_muted"
                     android:textSize="14sp"
                     android:gravity="center"

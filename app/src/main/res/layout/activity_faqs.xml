@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FB">
+    android:background="@color/app_bg">
 
     <!-- Header -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +32,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FAQs"
+            android:text="@string/title_faqs"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -62,8 +62,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="12dp"
-                android:text="COMMON QUESTIONS"
-                android:textColor="#9CA3AF"
+                android:text="@string/faq_header_common"
+                android:textColor="@color/text_muted"
                 android:textSize="11sp"
                 android:textStyle="bold" />
 
@@ -110,8 +110,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="12dp"
                                 android:layout_weight="1"
-                                android:text="How does PhishSwish work?"
-                                android:textColor="#111827"
+                                android:text="@string/faq1_q"
+                                android:textColor="@color/text_primary"
                                 android:textStyle="bold"
                                 android:textSize="14sp" />
                             <ImageView
@@ -119,7 +119,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/ic_chevron_right"
-                                app:tint="#9CA3AF" />
+                                app:tint="@color/text_muted" />
                         </LinearLayout>
                         <TextView
                             android:id="@+id/faqAnswer1"
@@ -128,14 +128,14 @@
                             android:paddingStart="60dp"
                             android:paddingEnd="16dp"
                             android:paddingBottom="12dp"
-                            android:text="PhishSwish uses advanced machine learning models and pattern detection to analyze SMS content and links for potential security threats like phishing or spam."
+                            android:text="@string/faq1_a"
                             android:justificationMode="inter_word"
-                            android:textColor="#6B7280"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp"
                             android:visibility="gone" />
                     </LinearLayout>
 
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F3F4F6" android:layout_marginHorizontal="12dp" />
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginHorizontal="12dp" />
 
                     <!-- FAQ Item 2 -->
                     <LinearLayout
@@ -167,8 +167,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="12dp"
                                 android:layout_weight="1"
-                                android:text="Is my data private?"
-                                android:textColor="#111827"
+                                android:text="@string/faq2_q"
+                                android:textColor="@color/text_primary"
                                 android:textStyle="bold"
                                 android:textSize="14sp" />
                             <ImageView
@@ -176,7 +176,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/ic_chevron_right"
-                                app:tint="#9CA3AF" />
+                                app:tint="@color/text_muted" />
                         </LinearLayout>
                         <TextView
                             android:id="@+id/faqAnswer2"
@@ -185,14 +185,14 @@
                             android:paddingStart="60dp"
                             android:paddingEnd="16dp"
                             android:paddingBottom="12dp"
-                            android:text="Yes. We only analyze messages you specifically choose to scan. Your personal information is encrypted and never shared with third parties."
+                            android:text="@string/faq2_a"
                             android:justificationMode="inter_word"
-                            android:textColor="#6B7280"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp"
                             android:visibility="gone" />
                     </LinearLayout>
 
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F3F4F6" android:layout_marginHorizontal="12dp" />
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginHorizontal="12dp" />
 
                     <!-- FAQ Item 3 -->
                     <LinearLayout
@@ -224,8 +224,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="12dp"
                                 android:layout_weight="1"
-                                android:text="What should I do if I receive a scam?"
-                                android:textColor="#111827"
+                                android:text="@string/faq3_q"
+                                android:textColor="@color/text_primary"
                                 android:textStyle="bold"
                                 android:textSize="14sp" />
                             <ImageView
@@ -233,7 +233,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/ic_chevron_right"
-                                app:tint="#9CA3AF" />
+                                app:tint="@color/text_muted" />
                         </LinearLayout>
                         <TextView
                             android:id="@+id/faqAnswer3"
@@ -242,14 +242,14 @@
                             android:paddingStart="60dp"
                             android:paddingEnd="16dp"
                             android:paddingBottom="12dp"
-                            android:text="If PhishSwish detects a scam, do not click any links. Delete the message immediately and block the sender's number through your phone's SMS app."
+                            android:text="@string/faq3_a"
                             android:justificationMode="inter_word"
-                            android:textColor="#6B7280"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp"
                             android:visibility="gone" />
                     </LinearLayout>
 
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F3F4F6" android:layout_marginHorizontal="12dp" />
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginHorizontal="12dp" />
 
                     <!-- FAQ Item 4 -->
                     <LinearLayout
@@ -281,8 +281,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="12dp"
                                 android:layout_weight="1"
-                                android:text="Can PhishSwish read my messages?"
-                                android:textColor="#111827"
+                                android:text="@string/faq4_q"
+                                android:textColor="@color/text_primary"
                                 android:textStyle="bold"
                                 android:textSize="14sp" />
                             <ImageView
@@ -290,7 +290,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/ic_chevron_right"
-                                app:tint="#9CA3AF" />
+                                app:tint="@color/text_muted" />
                         </LinearLayout>
                         <TextView
                             android:id="@+id/faqAnswer4"
@@ -299,9 +299,9 @@
                             android:paddingStart="60dp"
                             android:paddingEnd="16dp"
                             android:paddingBottom="12dp"
-                            android:text="PhishSwish only accesses your inbox when you open the 'Inbox Scan' tool. Analysis is performed on-device to ensure your private conversations stay private."
+                            android:text="@string/faq4_a"
                             android:justificationMode="inter_word"
-                            android:textColor="#6B7280"
+                            android:textColor="@color/text_muted"
                             android:textSize="13sp"
                             android:visibility="gone" />
                     </LinearLayout>
@@ -316,7 +316,7 @@
                 android:layout_marginBottom="48dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="#EAF2FF">
+                app:cardBackgroundColor="@color/icon_bg">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -326,23 +326,23 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Still have questions?"
-                        android:textColor="#111827"
+                        android:text="@string/faq_still_questions"
+                        android:textColor="@color/text_primary"
                         android:textStyle="bold"
                         android:textSize="16sp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Our support team is here to help you."
-                        android:textColor="#6B7280"
+                        android:text="@string/faq_support_help"
+                        android:textColor="@color/text_muted"
                         android:textSize="13sp" />
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnContactSupport"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Contact Support"
+                        android:text="@string/btn_contact_support"
                         android:textAllCaps="false"
                         android:textStyle="bold"
                         app:cornerRadius="24dp"

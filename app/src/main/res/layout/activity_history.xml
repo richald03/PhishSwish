@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/app_bg">
 
     <!-- Header -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +32,7 @@
             android:id="@+id/tvHistoryTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Scan History"
+            android:text="@string/title_history"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -41,17 +41,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btnBack" />
 
-        <ImageButton
-            android:id="@+id/btnDeleteAll"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Delete All"
-            android:src="@drawable/ic_delete"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@android:color/white" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -60,7 +50,7 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/nav_bg"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
@@ -73,10 +63,12 @@
     <!-- Filter Tabs (Exactly below header) -->
     <HorizontalScrollView
         android:id="@+id/hsvFilters"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:scrollbars="none"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnSourceFilter"
         app:layout_constraintTop_toBottomOf="@id/clHistoryHeader">
 
         <LinearLayout
@@ -96,7 +88,7 @@
                 android:paddingEnd="24dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:text="ALL"
+                android:text="@string/chip_all"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -112,8 +104,8 @@
                 android:paddingEnd="20dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:text="SAFE"
-                android:textColor="#4B5563"
+                android:text="@string/chip_safe"
+                android:textColor="@color/text_muted"
                 android:textSize="12sp" />
 
             <TextView
@@ -126,8 +118,8 @@
                 android:paddingEnd="20dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:text="SPAM"
-                android:textColor="#4B5563"
+                android:text="@string/chip_spam"
+                android:textColor="@color/text_muted"
                 android:textSize="12sp" />
 
             <TextView
@@ -140,19 +132,32 @@
                 android:paddingEnd="20dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:text="SCAM"
-                android:textColor="#4B5563"
+                android:text="@string/chip_scam"
+                android:textColor="@color/text_muted"
                 android:textSize="12sp" />
 
         </LinearLayout>
     </HorizontalScrollView>
 
+    <ImageButton
+        android:id="@+id/btnSourceFilter"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_filter"
+        android:contentDescription="Filter Source"
+        app:tint="@color/home_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/hsvFilters"
+        app:layout_constraintBottom_toBottomOf="@id/hsvFilters"/>
+
     <TextView
         android:id="@+id/tvEmptyState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No scans yet"
-        android:textColor="#9CA3AF"
+        android:text="@string/msg_no_scans_yet"
+        android:textColor="@color/text_muted"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"

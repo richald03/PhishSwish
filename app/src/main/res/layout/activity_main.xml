@@ -41,13 +41,13 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ImageButton
-            android:id="@+id/btnLogout"
+            android:id="@+id/btnThemeToggle"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_logout"
+            android:src="@drawable/ic_moon"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Logout"
+            android:contentDescription="Toggle Theme"
             app:tint="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -60,7 +60,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:visibility="gone"
-        android:indeterminateTint="#3B82F6"
+        android:indeterminateTint="@color/colorPrimary"
         android:elevation="10dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,7 +73,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:visibility="gone"
-        android:indeterminateTint="#3B82F6"
+        android:indeterminateTint="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +84,7 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/nav_bg"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
@@ -116,7 +116,7 @@
                 android:id="@+id/tvGreeting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hi, User! 👋"
+                tools:text="Hi, User! 👋"
                 android:textColor="@color/text_dark"
                 android:textStyle="bold"
                 android:textSize="22sp"/>
@@ -126,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Stay safe from phishing and scams."
+                android:text="@string/main_subtitle"
                 android:textColor="@color/text_muted"
                 android:textSize="13sp"/>
 
@@ -200,7 +200,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Scans Today"
+                                android:text="@string/label_scans_today"
                                 android:textSize="12sp"
                                 android:textColor="@color/text_muted"/>
 
@@ -228,7 +228,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text=" Safe 0"
+                            android:text="&#160;Safe&#160;&#160;&#160;0"
                             android:textStyle="bold"
                             android:textSize="12sp"
                             android:textColor="#16A34A"/>
@@ -238,7 +238,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Spam 0"
+                            android:text="Spam&#160;&#160;&#160;0"
                             android:textStyle="bold"
                             android:textSize="12sp"
                             android:textColor="@color/spam_orange"
@@ -249,7 +249,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Scam 0"
+                            android:text="Scam&#160;&#160;&#160;0"
                             android:textStyle="bold"
                             android:textSize="12sp"
                             android:textColor="@color/scam_red"
@@ -300,7 +300,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Paste &amp; Scan"
+                            android:text="@string/card_paste_scan_title"
                             android:textStyle="bold"
                             android:textSize="15sp"
                             android:textColor="@color/text_dark"/>
@@ -309,7 +309,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
-                            android:text="Analyze a suspicious message by pasting text."
+                            android:text="@string/card_paste_scan_sub"
                             android:textSize="12sp"
                             android:textColor="@color/text_muted"/>
                     </LinearLayout>
@@ -364,7 +364,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Inbox Scan"
+                            android:text="@string/card_inbox_scan_title"
                             android:textStyle="bold"
                             android:textSize="15sp"
                             android:textColor="@color/text_dark"/>
@@ -373,7 +373,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
-                            android:text="Scan your recent messages for potential scams."
+                            android:text="@string/card_inbox_scan_sub"
                             android:textSize="12sp"
                             android:textColor="@color/text_muted"/>
                     </LinearLayout>
@@ -386,9 +386,9 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Scan History -->
+            <!-- AR Scanning -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/btnHistory"
+                android:id="@+id/btnArScan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -411,10 +411,10 @@
                         android:background="@drawable/bg_icon_container">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_menu_recent_history"
+                            android:src="@drawable/ic_camera_scan"
                             app:tint="@color/home_primary"/>
                     </FrameLayout>
 
@@ -428,7 +428,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Scan History"
+                            android:text="@string/card_camera_scan_title"
                             android:textStyle="bold"
                             android:textSize="15sp"
                             android:textColor="@color/text_dark"/>
@@ -437,7 +437,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
-                            android:text="Review results and details of previous scans."
+                            android:text="@string/card_camera_scan_sub"
                             android:textSize="12sp"
                             android:textColor="@color/text_muted"/>
                     </LinearLayout>

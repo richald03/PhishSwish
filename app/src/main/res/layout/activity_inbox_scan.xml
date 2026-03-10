@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/app_bg">
 
     <!-- Header -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,7 +33,7 @@
             android:id="@+id/tvInboxTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Inbox Scan"
+            android:text="@string/title_inbox_scan"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -72,7 +72,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
-                android:hint="Search senders or subjects..."
+                android:hint="@string/inbox_search_hint"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:textSize="14sp"
@@ -100,7 +100,7 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/nav_bg"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
@@ -135,7 +135,7 @@
                 android:paddingEnd="16dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:text="All Messages"
+                android:text="@string/inbox_chip_all"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -150,8 +150,8 @@
                 android:paddingEnd="16dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:text="Unread"
-                android:textColor="#4B5563"
+                android:text="@string/inbox_chip_unread"
+                android:textColor="@color/text_muted"
                 android:textSize="12sp" />
 
             <TextView
@@ -164,8 +164,8 @@
                 android:paddingEnd="16dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:text="With Links"
-                android:textColor="#4B5563"
+                android:text="@string/inbox_chip_links"
+                android:textColor="@color/text_muted"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -177,8 +177,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
-        android:text="RECENT MESSAGES"
-        android:textColor="#9CA3AF"
+        android:text="@string/inbox_recent_messages"
+        android:textColor="@color/text_muted"
         android:textSize="11sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -201,8 +201,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="32dp"
-        android:text="No SMS messages found."
-        android:textColor="#6B7280"
+        android:text="@string/inbox_no_sms"
+        android:textColor="@color/text_muted"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
@@ -229,7 +229,7 @@
         android:layout_marginBottom="40dp"
         android:contentDescription="Refresh"
         android:src="@android:drawable/ic_popup_sync"
-        app:backgroundTint="#5C8DF6"
+        app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="@android:color/white" />

@@ -17,9 +17,16 @@
     <color name="text_dark">#111827</color>
     <color name="card_white">#FFFFFF</color>
     <color name="icon_bg">#EAF2FF</color>
-    <color name="safe_blue">#2563EB</color>
+    <color name="safe_blue">#16A34A</color>
     <color name="spam_orange">#F59E0B</color>
     <color name="scam_red">#DC2626</color>
+
+    <color name="result_safe_bg">#E7F9EF</color>
+    <color name="result_spam_bg">#FFFBEB</color>
+    <color name="result_scam_bg">#FEE2E2</color>
+
+    <color name="onboarding_start">#F4F7FF</color>
+    <color name="onboarding_center">#F7F2FF</color>
 
     <!-- Theme Aliases (Expected by themes.xml) -->
     <color name="colorPrimary">#3B82F6</color>
@@ -30,4 +37,11 @@
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorOnSurface">#111827</color>
     <color name="colorBackground">#F9FAFB</color>
+
+    <!-- Camera Scanning instruction text (theme-aware) -->
+    <color name="camera_instruction_text_color">#000000</color>
+
+    <!-- Camera Scanning overlay controls on camera preview (always white) -->
+    <color name="camera_overlay_icon_color">#FFFFFFFF</color>
+
 </resources>

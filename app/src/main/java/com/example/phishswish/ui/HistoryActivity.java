@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.phishswish.R;
 import com.example.phishswish.model.FirestoreScan;
+import com.example.phishswish.utils.CryptoManager;
+import com.example.phishswish.utils.SenderDetector;
 import com.example.phishswish.ui.adapters.HistoryAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +43,10 @@ public class HistoryActivity extends BaseActivity {
     private ArrayList<FirestoreScan> fullList = new ArrayList<>();
     private HistoryAdapter adapter;
     private BottomNavigationView bottomNav;
+    private ImageButton btnSourceFilter;
+
+    private String selectedVerdictFilter = "ALL";
+    private String selectedSourceFilter = "ALL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +71,11 @@ public class HistoryActivity extends BaseActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        ImageButton btnDeleteAll = findViewById(R.id.btnDeleteAll);
-        if (btnDeleteAll != null) {
-            btnDeleteAll.setOnClickListener(v ->
-                    requireInternetOrShowMessage(this::showDeleteAllConfirmation));
+
+
+        btnSourceFilter = findViewById(R.id.btnSourceFilter);
+        if (btnSourceFilter != null) {
+            btnSourceFilter.setOnClickListener(v -> showSourceFilterMenu());
         }
 
         setupFilters();
@@ -84,15 +91,20 @@ public class HistoryActivity extends BaseActivity {
                 i.putExtra("confidence", item.confidence);
                 i.putExtra("snippet", item.snippet);
                 i.putExtra("timestamp", item.timestamp);
-                i.putStringArrayListExtra("indicators", item.indicators);
                 i.putExtra("extractedUrl", item.extractedUrl);
                 
                 // Pass existing AI data to prevent re-prompting
                 i.putExtra("aiAnalysis", item.aiAnalysis);
-                i.putExtra("aiRecommendation", item.aiRecommendation);
-                i.putExtra("sender", item.sender != null ? item.sender : "Unknown");
+                i.putExtra("sender", SenderDetector.normalize(HistoryActivity.this, item.sender));
 
-                startActivity(i);
+                if (item.detectedLinks != null && !item.detectedLinks.isEmpty()) {
+                    i.putStringArrayListExtra("detected_links", item.detectedLinks);
+                }
+                if (item.linkStatus != null && !item.linkStatus.isEmpty()) {
+                    i.putExtra("link_status", item.linkStatus);
+                }
+
+                navigateWithLoading(i);
             }
 
             @Override
@@ -108,15 +120,16 @@ public class HistoryActivity extends BaseActivity {
 
     private void showSingleDeleteConfirmation(FirestoreScan item) {
         new AlertDialog.Builder(this)
-                .setTitle("Delete Item")
-                .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", (dialog, which) ->
-                        requireInternetOrShowMessage(() -> deleteSingleHistoryItem(item)))
-                .setNegativeButton("No", null)
+                .setTitle(getString(R.string.dialog_delete_item_title))
+                .setMessage(getString(R.string.dialog_delete_item_message))
+                .setPositiveButton(getString(R.string.btn_yes), (dialog, which) -> {
+                    deleteItemFromFirestore(item);
+                })
+                .setNegativeButton(getString(R.string.btn_no), null)
                 .show();
     }
 
-    private void deleteSingleHistoryItem(FirestoreScan item) {
+    private void deleteItemFromFirestore(FirestoreScan item) {
         if (!isOnline()) return;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null || item.docId == null) return;
@@ -128,39 +141,85 @@ public class HistoryActivity extends BaseActivity {
                 .document(item.docId)
                 .update("hiddenInHistory", true)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Item removed from history.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_item_removed), Toast.LENGTH_SHORT).show();
                     loadHistoryFromFirestore();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to delete item.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_item_delete_failed), Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void setupFilters() {
-        chipAll.setOnClickListener(v -> filterHistory("ALL"));
-        chipSafe.setOnClickListener(v -> filterHistory("SAFE"));
-        chipSpam.setOnClickListener(v -> filterHistory("SPAM"));
-        chipScam.setOnClickListener(v -> filterHistory("SCAM"));
+        chipAll.setOnClickListener(v -> {
+            selectedVerdictFilter = "ALL";
+            applyCombinedFilters();
+        });
+        chipSafe.setOnClickListener(v -> {
+            selectedVerdictFilter = "SAFE";
+            applyCombinedFilters();
+        });
+        chipSpam.setOnClickListener(v -> {
+            selectedVerdictFilter = "SPAM";
+            applyCombinedFilters();
+        });
+        chipScam.setOnClickListener(v -> {
+            selectedVerdictFilter = "SCAM";
+            applyCombinedFilters();
+        });
     }
 
-    private void filterHistory(String category) {
-        updateChipUI(category);
-        ArrayList<FirestoreScan> filtered = new ArrayList<>();
-        
-        if (category.equals("ALL")) {
-            filtered.addAll(fullList);
-        } else {
-            for (FirestoreScan scan : fullList) {
-                if (scan.label != null && scan.label.equalsIgnoreCase(category)) {
-                    filtered.add(scan);
-                }
+    private void showSourceFilterMenu() {
+        String[] options = {
+                getString(R.string.source_all),
+                getString(R.string.source_paste),
+                getString(R.string.source_inbox),
+                getString(R.string.source_ar)
+        };
+        String[] values = {"ALL", "paste", "inbox", "ar_scan"};
+
+        int checkedItem = 0;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].equals(selectedSourceFilter)) {
+                checkedItem = i;
+                break;
             }
         }
-        
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.title_filter_source)
+                .setSingleChoiceItems(options, checkedItem, (dialog, which) -> {
+                    selectedSourceFilter = values[which];
+                    applyCombinedFilters();
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
+    private void applyCombinedFilters() {
+        updateChipUI(selectedVerdictFilter);
+        ArrayList<FirestoreScan> filtered = new ArrayList<>();
+
+        for (FirestoreScan scan : fullList) {
+            boolean verdictMatch = selectedVerdictFilter.equals("ALL") || 
+                (scan.label != null && scan.label.equalsIgnoreCase(selectedVerdictFilter));
+            
+            boolean sourceMatch = selectedSourceFilter.equals("ALL") || 
+                (scan.source != null && scan.source.equalsIgnoreCase(selectedSourceFilter));
+            
+            // Special case for old records: if source is null, only show if filter is ALL
+            if (scan.source == null && !selectedSourceFilter.equals("ALL")) {
+                sourceMatch = false;
+            }
+
+            if (verdictMatch && sourceMatch) {
+                filtered.add(scan);
+            }
+        }
+
         items.clear();
         items.addAll(filtered);
         adapter.notifyDataSetChanged();
-        
+
         if (items.isEmpty()) {
             tvEmptyState.setVisibility(View.VISIBLE);
             rvHistory.setVisibility(View.GONE);
@@ -180,48 +239,12 @@ public class HistoryActivity extends BaseActivity {
                 chips[i].setTextColor(Color.WHITE);
             } else {
                 chips[i].setBackgroundResource(R.drawable.bg_chip_unselected);
-                chips[i].setTextColor(Color.parseColor("#4B5563"));
+                chips[i].setTextColor(ContextCompat.getColor(this, R.color.text_muted));
             }
         }
     }
 
-    private void showDeleteAllConfirmation() {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete History")
-                .setMessage("Are you sure you want to delete all your scan history?")
-                .setPositiveButton("Yes", (dialog, which) -> deleteAllHistory())
-                .setNegativeButton("No", null)
-                .show();
-    }
 
-    private void deleteAllHistory() {
-        if (!isOnline()) return;
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference scansRef = db.collection("users")
-                .document(user.getUid())
-                .collection("scans");
-
-        scansRef.get().addOnSuccessListener(query -> {
-            if (query.isEmpty()) {
-                Toast.makeText(this, "No history to delete.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            WriteBatch batch = db.batch();
-            for (QueryDocumentSnapshot doc : query) {
-                // Soft Delete: Mark as hidden so Category counts reset but Scans Today remains
-                batch.update(doc.getReference(), "hiddenInHistory", true);
-            }
-            batch.commit().addOnSuccessListener(aVoid -> {
-                Toast.makeText(this, "History cleared.", Toast.LENGTH_SHORT).show();
-                loadHistoryFromFirestore(); 
-            }).addOnFailureListener(e -> {
-                Toast.makeText(this, "Failed to delete history.", Toast.LENGTH_SHORT).show();
-            });
-        });
-    }
 
     @Override
     protected void onResume() {
@@ -255,7 +278,7 @@ public class HistoryActivity extends BaseActivity {
                         if (hasAi == null || !hasAi) continue;
 
                         String docId = doc.getId();
-                        String snippet = doc.getString("snippet");
+                        String snippet = CryptoManager.decrypt(doc.getString("snippet"));
                         String label = doc.getString("label");
 
                         long timestamp = 0;
@@ -270,31 +293,35 @@ public class HistoryActivity extends BaseActivity {
                         int confidence = confLong == null ? 0 : confLong.intValue();
 
                         String extractedUrl = doc.getString("extractedUrl");
-                        String sender = doc.getString("sender");
+                        String sender = CryptoManager.decrypt(doc.getString("sender"));
+                        String source = doc.getString("source");
 
                         // Retrieve saved AI data from Firestore
                         String aiAnalysis = doc.getString("aiAnalysis");
-                        String aiRecommendation = doc.getString("aiRecommendation");
 
-                        ArrayList<String> indicators = new ArrayList<>();
-                        Object rawIndicators = doc.get("indicators");
-                        if (rawIndicators instanceof java.util.List) {
-                            for (Object o : (java.util.List<?>) rawIndicators) {
-                                if (o != null) indicators.add(String.valueOf(o));
+                        java.util.List<?> linksRaw = (java.util.List<?>) doc.get("detected_links");
+                        ArrayList<String> detectedLinks = new ArrayList<>();
+                        if (linksRaw != null) {
+                            for (Object obj : linksRaw) {
+                                if (obj instanceof String) {
+                                    detectedLinks.add((String) obj);
+                                }
                             }
                         }
 
-                        FirestoreScan scan = new FirestoreScan(docId, snippet, label, confidence, timestamp, indicators, extractedUrl);
+                        FirestoreScan scan = new FirestoreScan(docId, snippet, label, confidence, timestamp, extractedUrl);
                         scan.aiAnalysis = aiAnalysis;
-                        scan.aiRecommendation = aiRecommendation;
                         scan.sender = sender;
+                        scan.source = source;
+                        scan.detectedLinks = detectedLinks;
+                        scan.linkStatus = doc.getString("link_status");
                         fullList.add(scan);
                     }
 
-                    filterHistory("ALL"); 
+                    applyCombinedFilters(); 
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to fetch history.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_fetch_failed), Toast.LENGTH_SHORT).show();
                 });
     }
 }

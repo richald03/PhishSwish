@@ -43,7 +43,8 @@ import com.example.phishswish.model.InboxMessage;
 import com.example.phishswish.model.ScanResult;
 import com.example.phishswish.ui.adapters.InboxAdapter;
 import com.example.phishswish.utils.InboxConsentManager;
-import com.example.phishswish.utils.FeatureExtractor;
+import com.example.phishswish.utils.SenderDetector;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -118,14 +119,14 @@ public class InboxScanActivity extends BaseActivity {
                 btnRefreshInbox.setEnabled(false);
                 if (pbRefreshing != null) pbRefreshing.setVisibility(View.VISIBLE);
 
-                Toast.makeText(this, "Refreshing inbox...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.msg_refreshing_inbox), Toast.LENGTH_SHORT).show();
 
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     loadInbox();
                     if (pbRefreshing != null) pbRefreshing.setVisibility(View.GONE);
                     btnRefreshInbox.setEnabled(true);
                     isRefreshing = false;
-                    Toast.makeText(this, "Your inbox is up to date.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_inbox_up_to_date), Toast.LENGTH_SHORT).show();
                 }, 2000);
             });
         }
@@ -144,19 +145,28 @@ public class InboxScanActivity extends BaseActivity {
         String uid = FirebaseAuth.getInstance().getUid();
         if (!InboxConsentManager.hasConsent(this, uid)) {
             new AlertDialog.Builder(this)
-                    .setTitle("Allow Inbox Scan?")
-                    .setMessage("PhishSwish can read SMS stored on this device to scan for scams/spam. Messages are analyzed locally. Do you want to continue?")
-                    .setPositiveButton("Allow", (dialog, which) -> {
+                    .setTitle(getString(R.string.dialog_allow_inbox_title))
+                    .setMessage(getString(R.string.dialog_allow_inbox_message))
+                    .setPositiveButton(getString(R.string.btn_allow), (dialog, which) -> {
                         InboxConsentManager.grantConsent(this, uid);
                         ensureSmsPermissionAndLoad();
                     })
-                    .setNegativeButton("Not now", (dialog, which) -> {
+                    .setNegativeButton(getString(R.string.btn_later), (dialog, which) -> {
                         dialog.dismiss();
                     })
                     .setCancelable(false)
                     .show();
         } else {
             ensureSmsPermissionAndLoad();
+        }
+    }
+
+    @Override
+    protected void onOnlineStateChanged(boolean isOnline) {
+        super.onOnlineStateChanged(isOnline);
+        if (btnRefreshInbox != null) {
+            btnRefreshInbox.setEnabled(isOnline);
+            btnRefreshInbox.setAlpha(isOnline ? 1.0f : 0.5f);
         }
     }
 
@@ -176,21 +186,32 @@ public class InboxScanActivity extends BaseActivity {
                 try {
                     voiceLauncher.launch(intent);
                 } catch (Exception e) {
-                    Toast.makeText(this, "Voice search not supported on this device.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_voice_search_not_supported), Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
 
     private void showMessagePreview(InboxMessage msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Message from: " + (msg.address != null ? msg.address : "Unknown"));
-        builder.setMessage(msg.body);
+        String dateStr = new java.text.SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
+                .format(new java.util.Date(msg.date));
         
-        builder.setPositiveButton("Scan Now", (dialog, which) -> showScanConfirmation(msg));
-        
-        builder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-        builder.show();
+        String previewContent = getString(R.string.label_sender_prefix) + (msg.address != null ? msg.address : getString(R.string.sender_unknown)) + "\n" +
+                               getString(R.string.label_date) + ": " + dateStr + "\n\n" +
+                               msg.body;
+
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.title_inbox_scan))
+                .setMessage(previewContent)
+                .setPositiveButton(getString(R.string.btn_scan_now), (dialog, which) -> {
+                    if (isOnline()) {
+                        showScanConfirmation(msg);
+                    } else {
+                        requireInternetOrShowMessage(null);
+                    }
+                })
+                .setNegativeButton(getString(R.string.btn_close), (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     private void setupFilters() {
@@ -243,7 +264,7 @@ public class InboxScanActivity extends BaseActivity {
             chip.setTextColor(ContextCompat.getColor(this, android.R.color.white));
         } else {
             chip.setBackgroundResource(R.drawable.bg_chip_unselected);
-            chip.setTextColor(android.graphics.Color.parseColor("#4B5563"));
+            chip.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
         }
     }
 
@@ -299,7 +320,7 @@ public class InboxScanActivity extends BaseActivity {
                 int idxRead = cursor.getColumnIndex(Telephony.Sms.READ);
 
                 while (cursor.moveToNext() && items.size() < 200) {
-                    String address = idxAddress >= 0 ? cursor.getString(idxAddress) : "Unknown";
+                    String address = SenderDetector.normalize(this, idxAddress >= 0 ? cursor.getString(idxAddress) : null);
                     String body = idxBody >= 0 ? cursor.getString(idxBody) : "";
                     long date = idxDate >= 0 ? cursor.getLong(idxDate) : System.currentTimeMillis();
                     int readVal = idxRead >= 0 ? cursor.getInt(idxRead) : 1;
@@ -311,7 +332,7 @@ public class InboxScanActivity extends BaseActivity {
                 }
             }
         } catch (Exception e) {
-            Toast.makeText(this, "Failed to read inbox.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.msg_failed_read_inbox), Toast.LENGTH_SHORT).show();
         }
 
         if (adapter != null) {
@@ -332,12 +353,12 @@ public class InboxScanActivity extends BaseActivity {
     }
 
     private void showScanConfirmation(InboxMessage message) {
-        new AlertDialog.Builder(this)
-                .setTitle("Confirm Scan")
-                .setMessage("Are you sure you want to scan this message for potential phishing and scams?")
-                .setPositiveButton("Yes, Scan", (dialog, which) ->
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.dialog_confirm_scan_title))
+                .setMessage(getString(R.string.dialog_confirm_scan_message))
+                .setPositiveButton(getString(R.string.btn_scan), (dialog, which) ->
                         requireInternetOrShowMessage(() -> performScanWithAnimation(message)))
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(getString(R.string.btn_cancel), (dialog, which) -> dialog.dismiss())
                 .setCancelable(true)
                 .show();
     }
@@ -361,7 +382,7 @@ public class InboxScanActivity extends BaseActivity {
         messageBody = messageBody.trim();
 
         if (messageBody.isEmpty()) {
-            Toast.makeText(this, "Empty message cannot be scanned.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.msg_empty_message_scan), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -387,33 +408,32 @@ public class InboxScanActivity extends BaseActivity {
                 ? ruleResult.getUrls().get(0)
                 : "";
 
-        String sender = (message != null && message.address != null && !message.address.trim().isEmpty())
-                ? message.address.trim()
-                : "Unknown";
+        String sender = SenderDetector.normalize(this, message != null ? message.address : null);
 
         if (isOnline()) {
             FirestoreService.autoSaveScan(
                     snippet,
                     ruleResult.getLabel(),
                     (int) ruleResult.getConfidence(),
-                    ruleResult.getIndicators(),
+                    new java.util.ArrayList<>(),
                     ts,
                     extractedUrl,
                     null,
                     null,
-                    sender
+                    sender,
+                    "inbox"
             );
         }
 
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("scan_result", ruleResult);
         intent.putExtra("sender", sender);
+        intent.putExtra("source", "inbox");
 
         // ML-based fields removed; Gemini will own the final verdict.
-        intent.putExtra("explanation", ruleResult.getRecommendation());
-        intent.putStringArrayListExtra("indicators", new ArrayList<>(ruleResult.getIndicators()));
+        intent.putExtra("explanation", "");
 
-        startActivity(intent);
+        navigateWithLoading(intent);
     }
 
     @Override
@@ -424,7 +444,7 @@ public class InboxScanActivity extends BaseActivity {
                 if (btnRefreshInbox != null) btnRefreshInbox.setEnabled(true);
                 loadInbox();
             } else {
-                Toast.makeText(this, "Permission denied.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.msg_permission_denied), Toast.LENGTH_SHORT).show();
                 updateEmptyState();
             }
         }

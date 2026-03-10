@@ -1,0 +1,373 @@
+<resources>
+    <string name="app_name">PhishSwish</string>
+
+    <!-- Settings Preferences -->
+    <string name="pref_language">Wika</string>
+    <string name="pref_language_subtitle_en">English</string>
+    <string name="pref_language_subtitle_tl">Tagalog</string>
+    <string name="dialog_select_language">Pumili ng Wika</string>
+    <string name="pref_filter_deleting">I-filter ang Pagtanggal</string>
+    <string name="pref_filter_deleting_sub">Tanggalin ang mga mensahe sa kasaysayan</string>
+    <string name="pref_change_password">Baguhin ang Password</string>
+    <string name="pref_change_password_sub">I-update ang iyong mga kredensyal sa seguridad</string>
+    <string name="pref_logout">Mag-logout</string>
+    <string name="pref_logout_sub">Mag-sign out mula sa iyong account</string>
+    <string name="pref_privacy">Patakaran sa Privacy</string>
+    <string name="pref_privacy_sub">Mga tuntunin at pamamahala ng data</string>
+    <string name="pref_faqs">Mga Madalas na Tanong</string>
+    <string name="pref_faqs_sub">Mga madalas itanong</string>
+    <string name="pref_about">Tungkol sa Amin</string>
+    <string name="pref_about_sub">Alamin ang higit pa tungkol sa PhishSwish</string>
+    <string name="title_settings">Mga Setting ng Profile</string>
+    <string name="btn_upload_profile">I-upload ang Profile</string>
+    <string name="label_account_actions">MGA AKSYON SA ACCOUNT</string>
+    <string name="label_app_preferences">MGA KAGUSTUHAN SA APP</string>
+    <string name="label_support_legal">SUPORTA AT LEGAL</string>
+
+    <!-- Dialog buttons shared -->
+    <string name="btn_yes">Oo</string>
+    <string name="btn_no">Hindi</string>
+    <string name="btn_cancel">Kanselahin</string>
+    <string name="btn_continue">Magpatuloy</string>
+    <string name="btn_ok">OK</string>
+
+    <!-- Logout -->
+    <string name="dialog_logout_title">Mag-logout</string>
+    <string name="dialog_logout_message">Sigurado ka bang gusto mong mag-log out?</string>
+
+    <!-- Change Password -->
+    <string name="dialog_change_password_title">Baguhin ang Password</string>
+    <string name="dialog_change_password_message">Sigurado ka bang gusto mong baguhin ang iyong password?</string>
+    <string name="dialog_verify_identity_title">I-verify ang Pagkakakilanlan</string>
+    <string name="dialog_verify_identity_message">Mangyaring ilagay ang iyong kasalukuyang password upang magpatuloy.</string>
+    <string name="dialog_update_password_title">I-update ang Password</string>
+    <string name="dialog_update_password_message">Ilagay ang iyong bagong password sa ibaba.</string>
+    <string name="hint_current_password">Kasalukuyang Password</string>
+    <string name="hint_new_password">Bagong Password</string>
+    <string name="btn_verify">I-verify</string>
+    <string name="btn_update">I-update</string>
+    <string name="msg_password_updated">Matagumpay na na-update ang password!</string>
+    <string name="msg_password_update_failed">Nabigong i-update ang password.</string>
+    <string name="error_password_empty">Hindi maaaring walang laman ang password</string>
+    <string name="error_password_incorrect">Mali ang kasalukuyang password</string>
+    <string name="error_password_too_short">Ang password ay dapat na hindi bababa sa 6 na karakter</string>
+
+    <!-- Filter Delete Dialog -->
+    <string name="dialog_filter_delete_title">I-filter ang Pagtanggal ng Kasaysayan</string>
+    <string name="filter_option_spam">Mga mensaheng Spam</string>
+    <string name="filter_option_scam">Mga mensaheng Scam</string>
+    <string name="filter_option_safe">Mga mensaheng ligtas</string>
+    <string name="btn_delete">Tanggalin</string>
+    <string name="msg_select_at_least_one">Mangyaring pumili ng kahit isang kategorya.</string>
+    <string name="msg_no_matching_history">Walang kasaysayan na tumutugma para tanggalin.</string>
+    <string name="msg_filtered_history_cleared">Nalinis na ang na-filter na kasaysayan.</string>
+    <string name="msg_delete_failed">Nabigong tanggalin ang na-filter na kasaysayan.</string>
+    <string name="msg_fetch_failed">Nabigong kunin ang kasaysayan.</string>
+
+    <!-- Gallery / Profile -->
+    <string name="dialog_access_gallery_title">I-access ang Gallery</string>
+    <string name="dialog_access_gallery_message">Gusto mo bang buksan ang iyong gallery para pumili ng profile picture?</string>
+    <string name="btn_open">Buksan</string>
+    <string name="dialog_permission_title">Kailangan ng Pahintulot</string>
+    <string name="dialog_permission_message">Kailangan ng PhishSwish ng access sa iyong gallery para makapag-upload ng profile picture. Gusto mo bang magbigay ng pahintulot?</string>
+    <string name="btn_allow">Payagan</string>
+    <string name="btn_not_now">Hindi Ngayon</string>
+    <string name="msg_permission_denied">Tinanggihan ang pahintulot na ma-access ang gallery</string>
+    <string name="msg_image_load_failed">Nabigong mag-load ng larawan</string>
+    <string name="msg_profile_updated">Na-update ang profile</string>
+
+    <!-- Main Activity -->
+    <string name="status_online">Online</string>
+    <string name="status_offline">Offline</string>
+    <string name="btn_logout_main">Mag-logout</string>
+    <string name="label_safe">Ligtas</string>
+    <string name="label_spam">Spam</string>
+    <string name="label_scam">Scam</string>
+
+    <!-- Paste Scan -->
+    <string name="hint_sender">Nagpadala</string>
+    <string name="hint_message">I-paste ang mensahe dito…</string>
+    <string name="btn_scan">I-scan</string>
+    <string name="btn_clear">I-clear</string>
+    <string name="error_sender_required">Kailangan ang nagpadala.</string>
+    <string name="error_message_required">Kailangan ang mensahe.</string>
+    <string name="label_ai_powered">Deteksyon gamit ang AI. Wala pang mga scan.</string>
+    <string name="label_last_scan_prefix">Deteksyon gamit ang AI. Huling scan: </string>
+
+    <!-- Result Screen -->
+    <string name="analyzing_message">Sinusuri gamit ang AI...</string>
+    <string name="label_sender_prefix">Nagpadala: </string>
+    <string name="btn_copy_link">Kopyahin ang Link</string>
+    <string name="btn_open_link">Buksan ang Link</string>
+    <string name="msg_url_copied">Nakopya ang URL sa clipboard</string>
+    <string name="msg_no_result">Walang nahanap na data ng resulta</string>
+    <string name="msg_cannot_open_url">Hindi mabuksan ang URL</string>
+
+    <!-- History -->
+    <string name="title_history">Kasaysayan ng Scan</string>
+    <string name="msg_no_history">Walang nahanap na kasaysayan ng scan.</string>
+
+    <!-- Login -->
+    <string name="title_login">Mag-login</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">Mag-login</string>
+    <string name="btn_google_login">Magpatuloy gamit ang Google</string>
+    <string name="link_go_register">Wala pang account? Mag-rehistro</string>
+    <string name="link_forgot">Nakalimutan ang Password?</string>
+    <string name="dialog_google_signin_title">Google Sign-In</string>
+    <string name="dialog_google_signin_message">Gagamitin ng PhishSwish ang iyong Google account para sa pagpapatunay at pag-sync ng kasaysayan ng scan.</string>
+    <string name="dialog_login_success_title">Matagumpay ang Pag-login</string>
+    <string name="dialog_login_success_message">Maligayang pagbabalik! Matagumpay kang naka-sign in.</string>
+    <string name="msg_signin_cancelled">Kanselado ang Google sign-in.</string>
+    <string name="msg_google_auth_failed">Nabigo ang Google authentication. Subukan muli.</string>
+
+    <!-- Register -->
+    <string name="title_register">Gumawa ng Account</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_confirm_password">Kumpirmahin ang Password</string>
+    <string name="btn_register">Mag-rehistro</string>
+    <string name="btn_google_register">Magpatuloy gamit ang Google</string>
+    <string name="link_go_login">May account na? Mag-login</string>
+    <string name="dialog_account_created_title">Nagawa na ang Account</string>
+    <string name="dialog_account_created_message">Maligayang pagdating sa PhishSwish! Matagumpay na nalikha ang iyong account.</string>
+    <string name="btn_get_started">Magsimula</string>
+
+    <!-- Onboarding -->
+    <string name="btn_get_started_onboarding">Magsimula</string>
+
+    <!-- Inbox Scan -->
+    <string name="title_inbox_scan">Inbox Scan</string>
+    <string name="msg_grant_sms_permission">Bigyan ng pahintulot ang SMS para i-scan ang iyong inbox.</string>
+    <string name="msg_grant_camera_permission">Kailangan ng pahintulot sa Camera para sa Camera Scanning.</string>
+
+    <!-- No Internet Banner -->
+    <string name="msg_no_internet">Walang koneksyon sa internet</string>
+    <string name="banner_no_internet_title">Walang Koneksyon sa Internet</string>
+    <string name="banner_no_internet_sub">Mga offline feature lang ang available. Mag-reconnect.</string>
+
+    <!-- Main Screen -->
+    <string name="main_subtitle">Manatiling ligtas mula sa phishing at mga scam.</string>
+    <string name="label_scans_today">Mga Scan Ngayon</string>
+    <string name="card_paste_scan_title">I-paste at I-scan</string>
+    <string name="card_paste_scan_sub">Suriin ang isang kahina-hinalang mensahe sa pamamagitan ng pag-paste ng teksto.</string>
+    <string name="card_inbox_scan_title">Inbox Scan</string>
+    <string name="card_inbox_scan_sub">I-scan ang iyong mga kamakailang mensahe para sa mga posibleng scam.</string>
+    <string name="card_scan_history_title">Kasaysayan ng Scan</string>
+    <string name="card_scan_history_sub">Suriin ang mga resulta at detalye ng mga nakaraang scan.</string>
+    <string name="card_camera_scan_title">Camera Scanning</string>
+    <string name="card_camera_scan_sub">I-scan ang mga mensahe gamit ang iyong camera nang real-time.</string>
+
+    <!-- Login Screen -->
+    <string name="login_welcome_title">Maligayang pagbabalik!</string>
+    <string name="login_welcome_subtitle">Mag-sign in para magpatuloy</string>
+    <string name="login_or_continue_with">o magpatuloy gamit ang</string>
+    <string name="login_no_account">Wala pang account? </string>
+    <string name="login_register_link">Mag-rehistro</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Gumawa ng Account</string>
+    <string name="hint_username_display">Username (display name)</string>
+    <string name="hint_email_address">Email Address</string>
+    <string name="register_or_sign_up_with">o mag-sign up gamit ang</string>
+    <string name="register_have_account">May account na? </string>
+    <string name="register_login_link">Mag-login</string>
+
+    <!-- Paste Scan Screen -->
+    <string name="paste_scan_card_title">Mabilis na Pagsusuri</string>
+    <string name="paste_scan_card_sub">I-paste ang mga kahina-hinalang mensahe, URL, o email headers para sa real-time na pagsusuri.</string>
+    <string name="btn_analyze_content">Suriin ang Nilalaman</string>
+    <string name="btn_clear_input">I-clear ang Input</string>
+
+    <!-- Result Screen -->
+    <string name="section_ai_analysis">PAGSUSURI NG AI</string>
+    <string name="result_ai_thinking">Nag-iisip ang AI...</string>
+    <string name="section_detected_link">NATUKOY NA LINK</string>
+    <string name="result_no_links_detected">Walang kahina-hinalang link na natukoy sa nilalamang ito.</string>
+    <!-- History Screen -->
+    <string name="chip_all">LAHAT</string>
+    <string name="chip_safe">LIGTAS</string>
+    <string name="chip_spam">SPAM</string>
+    <string name="chip_scam">SCAM</string>
+    <string name="msg_no_scans_yet">Wala pang scan</string>
+
+    <!-- Inbox Scan Screen -->
+    <string name="inbox_search_hint">Maghanap ng nagpadala o paksa...</string>
+    <string name="inbox_chip_all">Lahat ng Mensahe</string>
+    <string name="inbox_chip_unread">Hindi Nabasa</string>
+    <string name="inbox_chip_links">May Link</string>
+    <string name="inbox_recent_messages">MGA KAMAKAILANG MENSAHE</string>
+    <string name="inbox_no_sms">Walang nahanap na SMS na mensahe.</string>
+
+    <!-- Forgot Password Screen -->
+    <string name="forgot_title">Bawiin ang Account</string>
+    <string name="forgot_subtitle">Ilagay ang iyong nakarehistrong email para i-reset ang iyong password</string>
+    <string name="forgot_btn_send">Ipadala ang Reset Link</string>
+
+    <!-- Onboarding Screen -->
+    <string name="onboarding_title">I-scan Bago\nKa Mag-click</string>
+    <string name="onboarding_subtitle">Protektahan ang iyong digital na buhay sa pamamagitan ng pag-verify agad ng mga kahina-hinalang SMS link gamit ang PhishSwish.</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_inbox">Inbox</string>
+    <string name="nav_history">Kasaysayan</string>
+    <string name="nav_settings">Mga Setting</string>
+
+    <!-- No Internet Dialogs -->
+    <string name="no_internet_title">Walang Koneksyon sa Internet</string>
+    <string name="no_internet_subtitle">Mangyaring subukan muli mamaya.</string>
+    <string name="no_internet_oops">Oops!</string>
+    <string name="no_internet_message">Walang koneksyon sa internet.\nMangyaring subukan muli mamaya.</string>
+    <!-- Extra Toasts & Errors -->
+    <string name="msg_registration_failed">Nabigo ang rehistrasyon. Subukan muli.</string>
+    <string name="msg_profile_setup_failed">Nagawa ang account, ngunit nabigo ang pag-setup ng profile. Suriin ang iyong internet.</string>
+    <string name="msg_error_username">May error sa paghanap ng username.</string>
+    <string name="msg_username_not_found">Hindi natagpuan ang username. Mangyaring mag-rehistro.</string>
+    <string name="msg_no_internet_check">Walang koneksyon. Suriin ang iyong network at subukan muli.</string>
+    <string name="msg_incorrect_login">Mali ang mga detalye sa pag-login. Subukan muli.</string>
+    <string name="msg_too_many_attempts">Masyadong maraming pagtatangka. Subukan muli mamaya.</string>
+    <string name="msg_auth_failed">Nabigo ang pagpapatunay. Subukan muli.</string>
+    <string name="msg_refreshing_inbox">Kasalukuyang nire-refresh ang inbox...</string>
+    <string name="msg_inbox_up_to_date">Ang iyong inbox ay napapanahon na.</string>
+    <string name="msg_voice_search_not_supported">Hindi suportado ang voice search sa device na ito.</string>
+    <string name="msg_failed_read_inbox">Nabigong basahin ang inbox.</string>
+    <string name="msg_empty_message_scan">Hindi maaaring i-scan ang walang lamang mensahe.</string>
+    <string name="msg_item_removed">Inalis ang item sa kasaysayan.</string>
+    <string name="msg_item_delete_failed">Nabigong tanggalin ang item.</string>
+    <string name="msg_no_history_delete">Walang kasaysayan na tatanggalin.</string>
+    <string name="msg_history_cleared">Nalinis ang kasaysayan.</string>
+    <string name="msg_reset_link_sent">Naipadala ang password reset link. Suriin ang iyong inbox at Spam o Junk folder.</string>
+    <string name="msg_opening_support">Binubuksan ang support channel...</string>
+    <string name="msg_privacy_soon">Malapit na ang Privacy Policy screen</string>
+    <string name="msg_about_soon">Malapit na ang About screen</string>
+    <string name="msg_saved_cloud">Na-save sa kasaysayan at cloud!</string>
+    <string name="msg_cloud_save_failed">Nabigo ang pag-save sa cloud: </string>
+    <string name="error_empty_email_reset">Ilagay ang iyong nakarehistrong email para mai-reset ang password.</string>
+    <string name="error_invalid_email">Maglagay ng wastong email address (example@gmail.com).</string>
+    <string name="error_reset_failed">Hindi makapagpadala ng reset link. Subukan muli.</string>
+    <string name="error_no_account">Walang natagpuang account sa email na ito.</string>
+    <string name="error_too_many_requests">Masyadong maraming pagtatangka. Subukan muli mamaya.</string>
+    <string name="default_user">User</string>
+    <string name="greeting_hi">Kumusta, %1$s! 👋</string>
+    <string name="safe_prefix">&#160;Safe&#160;&#160;&#160;</string>
+    <string name="spam_prefix">Spam&#160;&#160;&#160;</string>
+    <string name="scam_prefix">Scam&#160;&#160;&#160;</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    
+    <!-- Result Screen -->
+    <string name="title_analysis_result">Resulta ng Pagsusuri</string>
+    <string name="label_certainty">KASIGURADUHAN</string>
+    <string name="result_waiting">Hintayin ang buong pagsusuri...</string>
+    <string name="label_malicious">MALISYOSO</string>
+    <string name="label_checking">Status ng Link: Sinusuri...</string>
+    <string name="section_detected_link_upper">NATUKLASANG LINK</string>
+
+    <!-- Privacy Policy -->
+    <string name="title_privacy_policy">Patakaran sa Pagkapribado</string>
+    <string name="pp_section1_title">1. Panimula</string>
+    <string name="pp_section1_body">Iginagalang ng PhishSwish ang iyong pagkapribado at kami ay nakatuon na protektahan ang iyong personal na impormasyon habang nagbibigay ng mga serbisyo sa pagtukoy ng scam.</string>
+    <string name="pp_section2_title">2. Impormasyong Kinokolekta Namin</string>
+    <string name="pp_section2_body">Maaari naming kolektahin ang:\n- Account info (email, username)\n- Mga ulat ng scam na ipinasa ng user\n- Limitadong usage analytics para mapabuti ang performance\nHindi namin ina-access ang mga personal na mensahe ng walang pahintulot.</string>
+    <string name="pp_section3_title">3. Paano Namin Ginagamit ang Impormasyon</string>
+    <string name="pp_section3_body">Ginagamit namin ang impormasyon para:\n- I-authenticate ang mga user account\n- Mapabuti ang pagtukoy sa scam\n- Mapaganda ang karanasan at seguridad ng user</string>
+    <string name="pp_section4_title">4. Seguridad ng Data</string>
+    <string name="pp_section4_body">Nagpapatupad kami ng secure na authentication at kontroladong cloud storage upang protektahan ang data ng user mula sa hindi awtorisadong pag-access.</string>
+    <string name="pp_section5_title">5. Pagbabahagi ng Data</string>
+    <string name="pp_section5_body">Hindi namin ibinebenta ang data ng user. Ang impormasyon ay ibinabahagi lamang kung kailangan ng batas.</string>
+    <string name="pp_section6_title">6. Iyong Mga Karapatan</string>
+    <string name="pp_section6_body">Maaaring i-update ng mga user ang impormasyon ng account o humiling na burahin ang data sa pamamagitan ng pagkontak sa support.</string>
+    <string name="pp_section7_title">7. Makipag-ugnayan sa Amin</string>
+    <string name="pp_contact_email">aldrichpayawal3@gmail.com</string>
+
+    <!-- FAQs -->
+    <string name="title_faqs">Mga Karaniwang Tanong (FAQs)</string>
+    <string name="faq_header_common">MGA KARANIWANG TANONG</string>
+    <string name="faq1_q">Paano gumagana ang PhishSwish?</string>
+    <string name="faq1_a">Gumagamit ang PhishSwish ng machine learning at pattern detection upang suriin ang mga SMS at link para sa mga posibleng banta tulad ng phishing at spam.</string>
+    <string name="faq2_q">Pribado ba ang aking data?</string>
+    <string name="faq2_a">Oo. Sinusuri lamang namin ang mga mensaheng pinili mo. Ang iyong personal na impormasyon ay naka-encrypt at hindi kailanman ibinabahagi.</string>
+    <string name="faq3_q">Ano ang gagawin ko kung makatanggap ako ng scam?</string>
+    <string name="faq3_a">Kung makatukoy ng scam ang PhishSwish, huwag i-click ang link. Burahin agad ang mensahe at i-block ang sender.</string>
+    <string name="faq4_q">Mababasa ba ng PhishSwish ang aking mga mensahe?</string>
+    <string name="faq4_a">Ang PhishSwish ay nag-a-access lamang ng inbox kapag binuksan mo ang \'Inbox Scan\'. Ang pagsusuri ay ginagawa sa iyong device para manatiling pribado ang iyong mga mensahe.</string>
+    <string name="faq_still_questions">May mga katanungan pa ba?</string>
+    <string name="faq_support_help">Handang tumulong ang aming support team.</string>
+    <string name="btn_contact_support">Kontakin ang Support</string>
+
+    <!-- About Us -->
+    <string name="title_about_us">Tungkol sa PhishSwish</string>
+    <string name="about_meet_team">Kilalanin ang Team</string>
+    <string name="about_role_android">Android Developer</string>
+    <string name="about_role_ui">UI/UX Designer</string>
+    <string name="about_role_backend">Backend &amp; Firebase Engineer</string>
+    <string name="about_role_qa">Quality Assurance &amp; Security Analyst</string>
+    <string name="about_bio_john">Nangunguna sa mobile development, na nakapasok sa mga sign-in at makinis na navigation.</string>
+    <string name="about_bio_rome">Nagdidisenyo ng mga malinaw na screen at daloy upang madaling gamitin ang PhishSwish araw-araw.</string>
+    <string name="about_bio_ven">Bumubuo at nagmimintina ng ligtas na backend services at data connection.</string>
+    <string name="about_bio_prince">Nagsasagawa ng pagsubok, nagpapatunay ng performance, at nagsusuri ng seguridad ng app.</string>
+    <string name="about_edu_tip">3rd Year BSIT Student – TIP Manila</string>
+    <string name="about_edu_regular">3rd Year BSIT Student</string>
+    <!-- Dialogs -->
+    <string name="dialog_confirm_link_open_title">Kumpirmahin ang Pagbukas ng Link</string>
+    <string name="dialog_confirm_link_open_message">Sigurado ka bang gusto mong buksan ang link na ito? Maaaring hindi ligtas o malisyoso ang website.</string>
+    <string name="msg_ai_unavailable">Pansamantalang hindi available ang pagsusuri ng AI. Pakisubukang muli mamaya.</string>
+    <string name="msg_no_internet_retry">Walang koneksyon sa internet. Pakisubukang muli mamaya.</string>
+    <string name="sender_unknown">Hindi Kilala</string>
+    <string name="label_date">Petsa</string>
+    
+    <!-- Camera Scanning -->
+    <string name="title_camera_scan">Camera Scanning</string>
+    <string name="msg_point_camera">Itutok ang camera sa mensahe</string>
+    <string name="msg_scanning_text">Ini-scan ang teksto...</string>
+    <string name="msg_text_detected">May tekstong nakita. I-tap ang Suriin.</string>
+    <string name="msg_no_text_detected">Walang mabasang teksto na nakita</string>
+    <string name="tip_improve_lighting">Pagandahin ang liwanag</string>
+    <string name="tip_move_closer">Ilapit ang camera sa mensahe</string>
+    <string name="tip_hold_steady">Hawakan nang matatag ang device</string>
+    <string name="tip_align_frame">I-align ang teksto sa loob ng frame</string>
+    <string name="label_detected_text">Natukoy na Teksto</string>
+    <string name="tip_scan_instruction">Tip: I-scan ang SMS, email, papel, o mensahe sa screen.</string>
+    <string name="btn_analyze">Suriin</string>
+    <string name="msg_waiting_detection">Naghihintay ng deteksyon ng teksto</string>
+    
+    <!-- Overlay Labels -->
+    <string name="overlay_url_detected">Kahina-hinalang URL ang natukoy</string>
+    <string name="overlay_otp_detected">OTP request ang natukoy</string>
+    <string name="overlay_urgency_detected">Urgency tactic ang natukoy</string>
+    <string name="overlay_brand_detected">Brand mention ang natukoy</string>
+    <string name="overlay_likely_safe">Mukhang ligtas</string>
+    
+    <string name="btn_yes_open">Oo, Buksan</string>
+    <string name="dialog_google_signin_error_message">Tila hindi mo pa nai-link ang Google account na ito o hindi ka pa nakarehistro. Mangyaring mag-sign up muna nang normal.</string>
+    <string name="dialog_sync_google_title">I-sync ang Google account?</string>
+    <string name="dialog_sync_google_message">Gusto mo bang i-sync ang mga detalye ng iyong Google account sa iyong profile?</string>
+    <string name="btn_skip">Laktawan</string>
+
+    <string name="dialog_welcome_back_title">Welcome Back</string>
+    <string name="dialog_welcome_back_message">Matagumpay kang nakapag-sign in.</string>
+    <string name="dialog_account_synced_title">Na-sync ang Account</string>
+    <string name="dialog_account_synced_message">Na-synchronize ang iyong profile kasama ang iyong Google account.</string>
+    <string name="dialog_allow_inbox_title">Payagan ang Inbox Scan?</string>
+    <string name="dialog_allow_inbox_message">Kailangan ng PhishSwish ng access sa iyong mga SMS message para mag-scan ng mga phishing link. Hindi namin iniimbak ang iyong mga personal na mensahe.</string>
+    <string name="btn_later">Mamaya na</string>
+    <string name="dialog_message_from">Mensahe mula kay: %1$s</string>
+    <string name="dialog_confirm_scan_title">Kumpirmahin ang Pag-scan</string>
+    <string name="dialog_confirm_scan_message">Sigurado ka bang gusto mong i-scan ang mensaheng ito?</string>
+
+    <string name="dialog_delete_item_title">Tanggalin ang Item</string>
+    <string name="dialog_delete_item_message">Sigurado ka bang gusto mong alisin ang scan na ito mula sa iyong kasaysayan?</string>
+    <string name="dialog_delete_history_title">Tanggalin ang Kasaysayan</string>
+    <string name="dialog_delete_history_message">Sigurado ka bang gusto mong tanggalin ang lahat ng iyong kasaysayan? Ang aksyong ito ay hindi na mababawi.</string>
+    <string name="btn_close">Isara</string>
+    <string name="btn_scan_now">I-scan Ngayon</string>
+    <string name="dialog_login_successful_title">Matagumpay na Pag-login</string>
+
+    <!-- Source Filtering -->
+    <string name="title_filter_source">I-filter ayon sa Pinagmulan</string>
+    <string name="source_all">Lahat</string>
+    <string name="source_paste">Paste Scan</string>
+    <string name="source_inbox">Inbox Scan</string>
+    <string name="source_ar">Camera Scan</string>
+</resources>

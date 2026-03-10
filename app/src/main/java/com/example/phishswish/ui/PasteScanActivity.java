@@ -20,7 +20,8 @@ import com.example.phishswish.detector.Detector;
 import com.example.phishswish.firebase.FirestoreService;
 import com.example.phishswish.model.ScanResult;
 import com.example.phishswish.utils.SafeClickListener;
-import com.example.phishswish.utils.FeatureExtractor;
+import com.example.phishswish.utils.SenderDetector;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -96,27 +97,22 @@ public class PasteScanActivity extends BaseActivity {
                         : "";
 
                 if (sender.isEmpty()) {
-                    if (tilSender != null) {
-                        tilSender.setError("Sender is required.");
-                    } else {
-                        Toast.makeText(PasteScanActivity.this, "Sender is required.", Toast.LENGTH_SHORT).show();
-                    }
-                    completion.onComplete();
-                    return;
+                    sender = SenderDetector.detectFromText(PasteScanActivity.this, text);
                 }
 
                 if (text.isEmpty()) {
                     if (tilMessage != null) {
-                        tilMessage.setError("Message is required.");
+                        tilMessage.setError(getString(R.string.error_message_required));
                     } else {
-                        Toast.makeText(PasteScanActivity.this, "Please paste a message to scan.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PasteScanActivity.this, getString(R.string.error_message_required), Toast.LENGTH_SHORT).show();
                     }
                     completion.onComplete();
                     return;
                 }
 
+                final String finalSender = sender;
                 requireInternetOrShowMessage(() -> {
-                    performScan(sender, text);
+                    performScan(finalSender, text);
                     completion.onComplete();
                 });
             }
@@ -129,7 +125,20 @@ public class PasteScanActivity extends BaseActivity {
         startLastScanListener();
     }
 
-    private void performScan(String sender, String text) {
+    @Override
+    protected void onOnlineStateChanged(boolean isOnline) {
+        super.onOnlineStateChanged(isOnline);
+        if (btnScan != null) {
+            btnScan.setEnabled(isOnline);
+            btnScan.setAlpha(isOnline ? 1.0f : 0.5f);
+        }
+        if (isOnline && lastScanListener == null) {
+            startLastScanListener();
+        }
+    }
+
+    private void performScan(String rawSender, String text) {
+        String sender = SenderDetector.normalize(this, rawSender);
         if (!isOnline()) {
             requireInternetOrShowMessage(null);
             return;
@@ -139,7 +148,7 @@ public class PasteScanActivity extends BaseActivity {
         // Rule-based analysis only; Gemini will be the single source of truth for final verdict.
         ScanResult ruleResult = Detector.analyze(text);
 
-        long ts = System.currentTimeMillis();
+        long ts = ruleResult.getTimestamp();
         String snippet = text.replace("\n", " ").trim();
         if (snippet.length() > 120) snippet = snippet.substring(0, 120);
 
@@ -147,13 +156,14 @@ public class PasteScanActivity extends BaseActivity {
 
         if (isOnline()) {
             FirestoreService.autoSaveScan(snippet, ruleResult.getLabel(), (int) ruleResult.getConfidence(),
-                    ruleResult.getIndicators(), ts, extractedUrl, null, null, sender);
+                    new java.util.ArrayList<>(), ts, extractedUrl, null, null, sender, "paste");
         }
 
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("scan_result", ruleResult);
         intent.putExtra("sender", sender);
-        startActivity(intent);
+        intent.putExtra("source", "paste");
+        navigateWithLoading(intent);
     }
 
     private void startLastScanListener() {

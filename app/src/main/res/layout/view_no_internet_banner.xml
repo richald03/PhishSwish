@@ -4,53 +4,50 @@
     android:id="@+id/cardNoInternet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginTop="8dp"
-    android:elevation="8dp"
-    app:cardCornerRadius="18dp"
-    app:cardBackgroundColor="@color/surface">
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="12dp"
+    android:elevation="6dp"
+    app:cardCornerRadius="14dp"
+    app:cardBackgroundColor="#FEE2E2">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:padding="14dp"
         android:gravity="center_vertical">
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_dot_red"
-            android:tint="@color/scam_red" />
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@android:drawable/stat_notify_error"
+            app:tint="#DC2626" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvNoInternetTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No Internet Connection"
-                android:textColor="@color/text_primary"
-                android:textSize="13sp"
+                android:text="@string/banner_no_internet_title"
+                android:textColor="#991B1B"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvNoInternetSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="Please try again later."
-                android:textColor="@color/text_muted"
+                android:layout_marginTop="1dp"
+                android:text="@string/banner_no_internet_sub"
+                android:textColor="#B91C1C"
                 android:textSize="12sp" />
         </LinearLayout>
 
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
-

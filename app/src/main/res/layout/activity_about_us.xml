@@ -33,7 +33,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="About PhishSwish"
+            android:text="@string/title_about_us"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -81,7 +81,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Meet the Team"
+                        android:text="@string/about_meet_team"
                         android:textAllCaps="false"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
@@ -103,13 +103,47 @@
                             android:orientation="horizontal"
                             android:padding="16dp">
 
-                            <com.google.android.material.imageview.ShapeableImageView
-                                android:id="@+id/ivMemberJohn"
-                                android:layout_width="72dp"
-                                android:layout_height="72dp"
-                                android:src="@drawable/person1"
-                                android:scaleType="centerCrop"
-                                app:shapeAppearanceOverlay="@style/CircleImage" />
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/ivMemberJohn"
+                                    android:layout_width="72dp"
+                                    android:layout_height="72dp"
+                                    android:src="@drawable/person1"
+                                    android:scaleType="centerCrop"
+                                    app:shapeAppearanceOverlay="@style/CircleImage" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="6dp"
+                                    android:orientation="horizontal"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:id="@+id/ivFBJohn"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:src="@drawable/ic_facebook"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                                    <ImageView
+                                        android:id="@+id/ivIGJohn"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_marginStart="8dp"
+                                        android:src="@drawable/ic_instagram"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                                </LinearLayout>
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -130,7 +164,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="Android Developer"
+                                    android:text="@string/about_role_android"
                                     android:textColor="@color/home_primary"
                                     android:textSize="14sp"
                                     android:drawableStart="@drawable/ic_profile"
@@ -141,7 +175,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="3rd Year BSIT Student – TIP Manila"
+                                    android:text="@string/about_edu_tip"
                                     android:textColor="@color/text_muted"
                                     android:textSize="14sp" />
 
@@ -151,7 +185,7 @@
                                     android:layout_marginTop="6dp"
                                     android:lineSpacingMultiplier="1.25"
                                     android:justificationMode="inter_word"
-                                    android:text="Leads mobile development, focusing on secure sign‑in, smooth navigation, and a stable experience."
+                                    android:text="@string/about_bio_john"
                                     android:textColor="@color/text_muted"
                                     android:textSize="13sp" />
 
@@ -175,13 +209,47 @@
                             android:orientation="horizontal"
                             android:padding="16dp">
 
-                            <com.google.android.material.imageview.ShapeableImageView
-                                android:id="@+id/ivMemberRome"
-                                android:layout_width="72dp"
-                                android:layout_height="72dp"
-                                android:src="@drawable/person2"
-                                android:scaleType="centerCrop"
-                                app:shapeAppearanceOverlay="@style/CircleImage" />
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/ivMemberRome"
+                                    android:layout_width="72dp"
+                                    android:layout_height="72dp"
+                                    android:src="@drawable/person2"
+                                    android:scaleType="centerCrop"
+                                    app:shapeAppearanceOverlay="@style/CircleImage" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="6dp"
+                                    android:orientation="horizontal"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:id="@+id/ivFBRome"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:src="@drawable/ic_facebook"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                                    <ImageView
+                                        android:id="@+id/ivIGRome"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_marginStart="8dp"
+                                        android:src="@drawable/ic_instagram"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                                </LinearLayout>
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -202,7 +270,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="UI/UX Designer"
+                                    android:text="@string/about_role_ui"
                                     android:textColor="@color/home_primary"
                                     android:textSize="14sp"
                                     android:drawableStart="@drawable/ic_profile"
@@ -213,7 +281,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="3rd Year BSIT Student"
+                                    android:text="@string/about_edu_regular"
                                     android:textColor="@color/text_muted"
                                     android:textSize="14sp" />
 
@@ -223,7 +291,7 @@
                                     android:layout_marginTop="6dp"
                                     android:lineSpacingMultiplier="1.25"
                                     android:justificationMode="inter_word"
-                                    android:text="Designs simple, clear screens and flows so PhishSwish feels easy to use every day."
+                                    android:text="@string/about_bio_rome"
                                     android:textColor="@color/text_muted"
                                     android:textSize="13sp" />
 
@@ -247,13 +315,47 @@
                             android:orientation="horizontal"
                             android:padding="16dp">
 
-                            <com.google.android.material.imageview.ShapeableImageView
-                                android:id="@+id/ivMemberVen"
-                                android:layout_width="72dp"
-                                android:layout_height="72dp"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/person3"
-                                app:shapeAppearanceOverlay="@style/CircleImage" />
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/ivMemberVen"
+                                    android:layout_width="72dp"
+                                    android:layout_height="72dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/person3"
+                                    app:shapeAppearanceOverlay="@style/CircleImage" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="6dp"
+                                    android:orientation="horizontal"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:id="@+id/ivFBVen"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:src="@drawable/ic_facebook"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                                    <ImageView
+                                        android:id="@+id/ivIGVen"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_marginStart="8dp"
+                                        android:src="@drawable/ic_instagram"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                                </LinearLayout>
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -274,7 +376,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="Backend &amp; Firebase Engineer"
+                                    android:text="@string/about_role_backend"
                                     android:textColor="@color/home_primary"
                                     android:textSize="14sp"
                                     android:drawableStart="@drawable/ic_profile"
@@ -285,7 +387,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="3rd Year BSIT Student"
+                                    android:text="@string/about_edu_regular"
                                     android:textColor="@color/text_muted"
                                     android:textSize="14sp" />
 
@@ -295,7 +397,7 @@
                                     android:layout_marginTop="6dp"
                                     android:lineSpacingMultiplier="1.25"
                                     android:justificationMode="inter_word"
-                                    android:text="Builds and maintains secure backend services and data connections that power PhishSwish."
+                                    android:text="@string/about_bio_ven"
                                     android:textColor="@color/text_muted"
                                     android:textSize="13sp" />
 
@@ -320,13 +422,47 @@
                             android:orientation="horizontal"
                             android:padding="16dp">
 
-                            <com.google.android.material.imageview.ShapeableImageView
-                                android:id="@+id/ivMemberPrince"
-                                android:layout_width="72dp"
-                                android:layout_height="72dp"
-                                android:src="@drawable/person4"
-                                android:scaleType="centerCrop"
-                                app:shapeAppearanceOverlay="@style/CircleImage" />
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/ivMemberPrince"
+                                    android:layout_width="72dp"
+                                    android:layout_height="72dp"
+                                    android:src="@drawable/person4"
+                                    android:scaleType="centerCrop"
+                                    app:shapeAppearanceOverlay="@style/CircleImage" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="6dp"
+                                    android:orientation="horizontal"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:id="@+id/ivFBPrince"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:src="@drawable/ic_facebook"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                                    <ImageView
+                                        android:id="@+id/ivIGPrince"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_marginStart="8dp"
+                                        android:src="@drawable/ic_instagram"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                                </LinearLayout>
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -347,7 +483,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="Quality Assurance &amp; Security Analyst"
+                                    android:text="@string/about_role_qa"
                                     android:textColor="@color/home_primary"
                                     android:textSize="14sp"
                                     android:drawableStart="@drawable/ic_profile"
@@ -358,7 +494,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:text="3rd Year BSIT Student"
+                                    android:text="@string/about_edu_regular"
                                     android:textColor="@color/text_muted"
                                     android:textSize="14sp" />
 
@@ -368,7 +504,7 @@
                                     android:layout_marginTop="6dp"
                                     android:lineSpacingMultiplier="1.25"
                                     android:justificationMode="inter_word"
-                                    android:text="Conducts testing, validates performance, and evaluates app security to ensure reliability."
+                                    android:text="@string/about_bio_prince"
                                     android:textColor="@color/text_muted"
                                     android:textSize="13sp" />
 

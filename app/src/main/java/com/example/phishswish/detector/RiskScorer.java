@@ -51,13 +51,12 @@ public class RiskScorer {
         int confidencePercent = computeConfidence(totalScore, maxScore, label);
         result.setConfidence(confidencePercent); // store 55..100 as percent
         
-        result.setIndicators(new java.util.ArrayList<>(detected));
         result.setUrls(new java.util.ArrayList<>(indicators.getUrls()));
         result.setSnippet(originalText);
         result.setTimestamp(System.currentTimeMillis());
         
         // Add reasons/recommendation based on findings
-        result.setRecommendation(generateRecommendation(result.getLabel()));
+        // (Recommendations removed as per requirement)
 
         return result;
     }

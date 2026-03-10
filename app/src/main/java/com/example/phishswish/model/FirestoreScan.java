@@ -9,22 +9,22 @@ public class FirestoreScan implements Serializable {
     public String label;
     public int confidence;
     public long timestamp;
-    public ArrayList<String> indicators;
     public String extractedUrl;
     public String aiAnalysis;
-    public String aiRecommendation;
     public String sender;
+    public String source;
+    public ArrayList<String> detectedLinks;
+    public String linkStatus;
 
     public FirestoreScan() {} // required
 
     public FirestoreScan(String docId, String snippet, String label, int confidence,
-                         long timestamp, ArrayList<String> indicators, String extractedUrl) {
+                         long timestamp, String extractedUrl) {
         this.docId = docId;
         this.snippet = snippet;
         this.label = label;
         this.confidence = confidence;
         this.timestamp = timestamp;
-        this.indicators = indicators;
         this.extractedUrl = extractedUrl;
     }
 }

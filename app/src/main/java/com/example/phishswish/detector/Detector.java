@@ -9,7 +9,7 @@ public class Detector {
 
     private static final IndicatorScanner scanner = new IndicatorScanner();
     private static final RiskScorer scorer = new RiskScorer();
-    private static final ExplanationBuilder explanationBuilder = new ExplanationBuilder();
+
 
     /**
      * Analyzes the input text for phishing indicators and returns a complete ScanResult.
@@ -32,8 +32,7 @@ public class Detector {
         ScanResult result = scorer.score(indicators, normalizedText);
 
         // 4. Build detailed explanations and recommendations
-        result.setReasons(new ArrayList<>(explanationBuilder.buildReasons(result.getIndicators())));
-        result.setRecommendation(explanationBuilder.getRecommendation(result.getLabel()));
+        // (Recommendations removed as per requirement)
 
         return result;
     }

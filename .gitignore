@@ -17,3 +17,16 @@ local.properties
 # Firebase / Google services configuration
 google-services.json
 **/google-services.json
+
+# API Keys and Secrets
+secrets.properties
+*.jks
+*.keystore
+signing.properties
+key.properties
+.env
+
+# Root Temp files
+/*.log
+/*.txt
+/h

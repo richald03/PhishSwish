@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.phishswish.R;
+import com.example.phishswish.utils.LanguageManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -41,7 +42,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
+
+    private enum EmailState {
+        UNVERIFIED, PENDING_VERIFICATION, VERIFIED, EXISTS, INVALID
+    }
+    private EmailState currentEmailState = EmailState.UNVERIFIED;
+    
+    private android.os.Handler pollingHandler = new android.os.Handler();
+    private Runnable pollingRunnable;
+
+    private TextView tvVerifyEmail;
+    private android.widget.ImageView ivEmailVerified;
+
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
@@ -57,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 setLoading(false);
                 if (result.getResultCode() == RESULT_CANCELED) {
-                    Toast.makeText(this, "Google sign-in cancelled.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_signin_cancelled), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (result.getData() == null) return;
@@ -66,9 +79,11 @@ public class RegisterActivity extends AppCompatActivity {
                             .getResult(ApiException.class);
                     showGoogleSyncConfirmation(account);
                 } catch (ApiException e) {
-                    Toast.makeText(this, "Google authentication failed. Please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.msg_google_auth_failed), Toast.LENGTH_LONG).show();
                 }
             });
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +107,31 @@ public class RegisterActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBarRegister);
         formContent = findViewById(R.id.register_form_content);
         TextView tvGoLogin = findViewById(R.id.tvGoLogin);
+        
+        tvVerifyEmail = findViewById(R.id.tvVerifyEmail);
+        ivEmailVerified = findViewById(R.id.ivEmailVerified);
 
         setupTextWatchers();
+
+        pollingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                FirebaseUser user = auth.getCurrentUser();
+                if (user != null && currentEmailState == EmailState.PENDING_VERIFICATION) {
+                    user.reload().addOnSuccessListener(aVoid -> {
+                        if (user.isEmailVerified()) {
+                            currentEmailState = EmailState.VERIFIED;
+                            tvVerifyEmail.setVisibility(View.GONE);
+                            ivEmailVerified.setVisibility(View.VISIBLE);
+                        } else {
+                            pollingHandler.postDelayed(this, 3000);
+                        }
+                    }).addOnFailureListener(e -> {
+                        pollingHandler.postDelayed(this, 3000);
+                    });
+                }
+            }
+        };
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -103,15 +141,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         tvGoLogin.setOnClickListener(v -> finish());
         btnRegister.setOnClickListener(v -> validateAndRegister());
+        tvVerifyEmail.setOnClickListener(v -> verifyEmailAction());
         btnGoogle.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                    .setTitle("Google Sign-In")
-                    .setMessage("PhishSwish will use your Google account for authentication and syncing scan history.")
-                    .setPositiveButton("Continue", (dialog, which) -> {
+                    .setTitle(getString(R.string.dialog_google_signin_title))
+                    .setMessage(getString(R.string.dialog_google_signin_error_message))
+                    .setPositiveButton(getString(R.string.btn_continue), (dialog, which) -> {
                         setLoading(true);
                         googleLauncher.launch(googleClient.getSignInIntent());
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(getString(R.string.btn_cancel), null)
                     .show();
         });
     }
@@ -123,7 +162,6 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 tilUsername.setError(null);
-                tilEmail.setError(null);
                 tilPassword.setError(null);
                 tilConfirm.setError(null);
             }
@@ -131,20 +169,88 @@ public class RegisterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         };
         etUsername.addTextChangedListener(watcher);
-        etEmail.addTextChangedListener(watcher);
         etPassword.addTextChangedListener(watcher);
         etConfirm.addTextChangedListener(watcher);
+        
+        etEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilEmail.setError(null);
+                if (currentEmailState != EmailState.UNVERIFIED) {
+                    currentEmailState = EmailState.UNVERIFIED;
+                    tvVerifyEmail.setVisibility(View.VISIBLE);
+                    tvVerifyEmail.setEnabled(true);
+                    tvVerifyEmail.setText("Verify");
+                    ivEmailVerified.setVisibility(View.GONE);
+                    pollingHandler.removeCallbacks(pollingRunnable);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    private void verifyEmailAction() {
+        String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+        if (TextUtils.isEmpty(email)) {
+            tilEmail.setError("Email is required");
+            return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            tilEmail.setError("Invalid email format");
+            return;
+        }
+        
+        tilEmail.setError(null);
+        tvVerifyEmail.setEnabled(false);
+        setLoading(true);
+        String tempPwd = "Temp_" + System.currentTimeMillis() + "!Aa";
+
+        auth.createUserWithEmailAndPassword(email, tempPwd)
+            .addOnSuccessListener(authResult -> {
+                FirebaseUser user = authResult.getUser();
+                if (user != null) {
+                    user.sendEmailVerification().addOnCompleteListener(task -> {
+                        setLoading(false);
+                        if (task.isSuccessful()) {
+                            currentEmailState = EmailState.PENDING_VERIFICATION;
+                            Toast.makeText(RegisterActivity.this, "Verification email sent. Please check your inbox.", Toast.LENGTH_LONG).show();
+                            pollingHandler.removeCallbacks(pollingRunnable);
+                            pollingHandler.postDelayed(pollingRunnable, 3000);
+                        } else {
+                            user.delete();
+                            tilEmail.setError("Failed to send verification email");
+                            tvVerifyEmail.setEnabled(true);
+                        }
+                    });
+                } else {
+                    setLoading(false);
+                    tvVerifyEmail.setEnabled(true);
+                }
+            })
+            .addOnFailureListener(e -> {
+                setLoading(false);
+                if (e instanceof FirebaseAuthUserCollisionException) {
+                    currentEmailState = EmailState.EXISTS;
+                    tilEmail.setError("Use another email");
+                } else {
+                    tilEmail.setError("Error checking email");
+                }
+                tvVerifyEmail.setEnabled(true);
+            });
     }
 
     private void showGoogleSyncConfirmation(GoogleSignInAccount account) {
         new AlertDialog.Builder(this)
-                .setTitle("Sync Google account?")
-                .setMessage("Use " + account.getEmail() + " to sign in and sync your scan history with PhishSwish?")
-                .setPositiveButton("Continue", (dialog, which) -> {
+                .setTitle(getString(R.string.dialog_sync_google_title))
+                .setMessage(getString(R.string.dialog_sync_google_message))
+                .setPositiveButton(getString(R.string.btn_continue), (dialog, which) -> {
                     setLoading(true);
                     firebaseAuthWithGoogle(account.getIdToken());
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> {
+                .setNegativeButton(getString(R.string.btn_cancel), (dialog, which) -> {
                     googleClient.signOut();
                     setLoading(false);
                 })
@@ -153,6 +259,11 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void validateAndRegister() {
+        if (currentEmailState != EmailState.VERIFIED) {
+            Toast.makeText(this, "Please verify your email first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String username = etUsername.getText() != null ? etUsername.getText().toString().trim() : "";
         String email = etEmail != null && etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
         String pass = etPassword.getText() != null ? etPassword.getText().toString() : "";
@@ -198,22 +309,34 @@ public class RegisterActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
-                    Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_registration_failed), Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void performAuthRegistration(String username, String email, String pass) {
-        auth.createUserWithEmailAndPassword(email, pass)
-                .addOnSuccessListener(authResult -> {
-                    FirebaseUser user = authResult.getUser();
-                    if (user != null) {
-                        saveProfileAndMapping(user.getUid(), username, email);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    setLoading(false);
-                    Toast.makeText(this, friendlyAuthError(e), Toast.LENGTH_LONG).show();
-                });
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null && currentUser.getEmail() != null && currentUser.getEmail().equalsIgnoreCase(email)) {
+            currentUser.updatePassword(pass)
+                    .addOnSuccessListener(aVoid -> {
+                        saveProfileAndMapping(currentUser.getUid(), username, email);
+                    })
+                    .addOnFailureListener(e -> {
+                        setLoading(false);
+                        Toast.makeText(this, friendlyAuthError(e), Toast.LENGTH_LONG).show();
+                    });
+        } else {
+            auth.createUserWithEmailAndPassword(email, pass)
+                    .addOnSuccessListener(authResult -> {
+                        FirebaseUser user = authResult.getUser();
+                        if (user != null) {
+                            saveProfileAndMapping(user.getUid(), username, email);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        setLoading(false);
+                        Toast.makeText(this, friendlyAuthError(e), Toast.LENGTH_LONG).show();
+                    });
+        }
     }
 
     private void saveProfileAndMapping(String uid, String username, String email) {
@@ -235,20 +358,20 @@ public class RegisterActivity extends AppCompatActivity {
                         .addOnSuccessListener(v -> {
                             setLoading(false);
                             new AlertDialog.Builder(this)
-                                    .setTitle("Account Created")
-                                    .setMessage("Welcome to PhishSwish! Your account has been successfully created.")
-                                    .setPositiveButton("Get Started", (dialog, which) -> goHome())
+                                    .setTitle(getString(R.string.dialog_account_created_title))
+                                    .setMessage(getString(R.string.dialog_account_created_message))
+                                    .setPositiveButton(getString(R.string.btn_ok), (dialog, which) -> goHome())
                                     .setCancelable(false)
                                     .show();
                         })
                         .addOnFailureListener(e -> {
                             setLoading(false);
-                            Toast.makeText(this, "Account created, but profile setup failed. Please check your internet.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, getString(R.string.msg_profile_setup_failed), Toast.LENGTH_LONG).show();
                             goHome();
                         }))
                 .addOnFailureListener(e -> {
                     setLoading(false);
-                    Toast.makeText(this, "Account created, but profile setup failed. Please check your internet.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.msg_profile_setup_failed), Toast.LENGTH_LONG).show();
                     goHome();
                 });
     }
@@ -264,7 +387,7 @@ public class RegisterActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
-                    Toast.makeText(this, "Google authentication failed. Please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.msg_google_auth_failed), Toast.LENGTH_LONG).show();
                 });
     }
 
@@ -276,9 +399,10 @@ public class RegisterActivity extends AppCompatActivity {
                         recreateProfile(user, true);
                     } else {
                         new AlertDialog.Builder(this)
-                                .setTitle("Welcome Back")
-                                .setMessage("Welcome back! You have signed in with Google.")
-                                .setPositiveButton("Continue", (dialog, which) -> goHome())
+                                .setTitle(getString(R.string.dialog_welcome_back_title))
+                                .setMessage(getString(R.string.dialog_welcome_back_message))
+                                .setPositiveButton(getString(R.string.btn_continue), (dialog, which) -> goHome())
+                                .setNegativeButton(getString(R.string.btn_skip), (dialog, which) -> goHome())
                                 .setCancelable(false)
                                 .show();
                     }
@@ -307,9 +431,9 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (isFirstTime) {
                         new AlertDialog.Builder(this)
-                                .setTitle("Account Synced")
-                                .setMessage("Your account has been successfully synced in via Google.")
-                                .setPositiveButton("Get Started", (dialog, which) -> goHome())
+                                .setTitle(getString(R.string.dialog_account_synced_title))
+                                .setMessage(getString(R.string.dialog_account_synced_message))
+                                .setPositiveButton(getString(R.string.btn_ok), (dialog, which) -> goHome())
                                 .setCancelable(false)
                                 .show();
                     } else {

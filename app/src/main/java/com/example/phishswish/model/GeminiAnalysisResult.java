@@ -28,19 +28,13 @@ public class GeminiAnalysisResult implements Serializable {
     private Category category;
     private int certainty; // 0–100
     private String why;
-    private final List<String> tips;
-    private final List<String> detectedLinks;
 
     private GeminiAnalysisResult(Category category,
                                  int certainty,
-                                 String why,
-                                 List<String> tips,
-                                 List<String> detectedLinks) {
+                                 String why) {
         this.category = category;
         this.certainty = PercentageUtils.clampInt(certainty);
         this.why = (why != null ? why.trim() : "");
-        this.tips = tips != null ? tips : new ArrayList<>();
-        this.detectedLinks = detectedLinks != null ? detectedLinks : new ArrayList<>();
     }
 
     public Category getCategory() {
@@ -56,11 +50,11 @@ public class GeminiAnalysisResult implements Serializable {
     }
 
     public List<String> getTips() {
-        return tips;
+        return new ArrayList<>();
     }
 
     public List<String> getDetectedLinks() {
-        return detectedLinks;
+        return new ArrayList<>();
     }
 
     /**
@@ -72,7 +66,7 @@ public class GeminiAnalysisResult implements Serializable {
                                                   String why,
                                                   List<String> tips,
                                                   List<String> detectedLinks) {
-        return new GeminiAnalysisResult(category, certainty, why, tips, detectedLinks);
+        return new GeminiAnalysisResult(category, certainty, why);
     }
 
     public static GeminiAnalysisResult fromJson(String json) throws JSONException {
@@ -92,44 +86,14 @@ public class GeminiAnalysisResult implements Serializable {
         int certainty = root.has("certainty") ? root.optInt("certainty", 50) : 50;
         certainty = PercentageUtils.clampInt(certainty);
 
-        // Support both legacy "why" and newer "reasoning" keys.
         String why = root.optString("why", "").trim();
-        if (why.isEmpty()) {
-            why = root.optString("reasoning", "").trim();
-        }
-
-        List<String> tips = new ArrayList<>();
-        // Tips can come from "tips" (old schema) or "detected_signals" (new schema).
-        JSONArray tipsArr = root.optJSONArray("tips");
-        if (tipsArr == null) {
-            tipsArr = root.optJSONArray("detected_signals");
-        }
-        if (tipsArr != null) {
-            for (int i = 0; i < tipsArr.length(); i++) {
-                String t = tipsArr.optString(i, "").trim();
-                if (!t.isEmpty()) {
-                    tips.add(t);
-                }
-            }
-        }
-
-        List<String> detectedLinks = new ArrayList<>();
-        JSONArray linksArr = root.optJSONArray("detected_links");
-        if (linksArr != null) {
-            for (int i = 0; i < linksArr.length(); i++) {
-                String l = linksArr.optString(i, "").trim();
-                if (!l.isEmpty()) {
-                    detectedLinks.add(l);
-                }
-            }
-        }
 
         // Final validation: category must be one of SAFE/SPAM/SCAM.
         if (category == null) {
             throw new JSONException("Invalid or missing category");
         }
 
-        return new GeminiAnalysisResult(category, certainty, why, tips, detectedLinks);
+        return new GeminiAnalysisResult(category, certainty, why);
     }
 
     /**

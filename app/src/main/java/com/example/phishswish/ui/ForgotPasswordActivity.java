@@ -21,7 +21,7 @@ import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
-public class ForgotPasswordActivity extends AppCompatActivity {
+public class ForgotPasswordActivity extends BaseActivity {
 
     private TextInputLayout tilEmail;
     private TextInputEditText etEmail;
@@ -68,11 +68,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
 
         if (TextUtils.isEmpty(email)) {
-            tilEmail.setError("Enter your registered email to reset your password.");
+            tilEmail.setError(getString(R.string.error_empty_email_reset));
             return;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilEmail.setError("Enter a valid email address (example@gmail.com).");
+            tilEmail.setError(getString(R.string.error_invalid_email));
             return;
         }
 
@@ -82,18 +82,18 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         auth.sendPasswordResetEmail(email)
                 .addOnSuccessListener(unused -> {
                     setLoading(false);
-                    Toast.makeText(this, "Password reset link sent. Please check your inbox and Spam/Junk folder.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.msg_reset_link_sent), Toast.LENGTH_LONG).show();
                     finish();
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
-                    String errorMsg = "Unable to send reset link. Please try again.";
+                    String errorMsg = getString(R.string.error_reset_failed);
                     if (e instanceof FirebaseNetworkException) {
-                        errorMsg = "No internet connection. Check your network and try again.";
+                        errorMsg = getString(R.string.msg_no_internet_check);
                     } else if (e instanceof FirebaseAuthInvalidUserException) {
-                        errorMsg = "No account found with this email.";
+                        errorMsg = getString(R.string.error_no_account);
                     } else if (e instanceof FirebaseTooManyRequestsException) {
-                        errorMsg = "Too many requests. Please try again later.";
+                        errorMsg = getString(R.string.error_too_many_requests);
                     }
                     Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
                 });

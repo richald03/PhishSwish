@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.phishswish.R;
+import com.example.phishswish.utils.LanguageManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -42,7 +43,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
@@ -57,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 setLoading(false);
                 if (result.getResultCode() == Activity.RESULT_CANCELED) {
-                    Toast.makeText(this, "Google sign-in cancelled.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.msg_signin_cancelled), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (result.getData() == null) return;
@@ -67,12 +68,14 @@ public class LoginActivity extends AppCompatActivity {
                     showGoogleSyncConfirmation(account);
                 } catch (ApiException e) {
                     if (e.getStatusCode() == CommonStatusCodes.CANCELED) {
-                        Toast.makeText(this, "Google sign-in cancelled.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.msg_signin_cancelled), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Google authentication failed. Please try again.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.msg_google_auth_failed), Toast.LENGTH_LONG).show();
                     }
                 }
             });
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,21 +112,17 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> validateAndLogin());
         btnGoogle.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                    .setTitle("Google Sign-In")
-                    .setMessage("PhishSwish will use your Google account for authentication and syncing scan history.")
-                    .setPositiveButton("Continue", (dialog, which) -> {
+                    .setTitle(getString(R.string.dialog_google_signin_title))
+                    .setMessage(getString(R.string.dialog_google_signin_error_message))
+                    .setPositiveButton(getString(R.string.btn_ok), (dialog, which) -> {
                         setLoading(true);
                         googleLauncher.launch(googleClient.getSignInIntent());
                     })
                     .setNegativeButton("Cancel", null)
                     .show();
         });
-        tvGoRegister.setOnClickListener(v -> {
-            startActivity(new Intent(this, RegisterActivity.class));
-        });
-        tvForgot.setOnClickListener(v -> {
-            startActivity(new Intent(this, ForgotPasswordActivity.class));
-        });
+        tvGoRegister.setOnClickListener(v -> navigateWithLoading(RegisterActivity.class));
+        tvForgot.setOnClickListener(v -> navigateWithLoading(ForgotPasswordActivity.class));
     }
 
     private void setupTextWatchers() {
@@ -144,13 +143,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showGoogleSyncConfirmation(GoogleSignInAccount account) {
         new AlertDialog.Builder(this)
-                .setTitle("Sync Google account?")
-                .setMessage("Use " + account.getEmail() + " to sign in and sync your scan history with PhishSwish?")
-                .setPositiveButton("Continue", (dialog, which) -> {
+                .setTitle(getString(R.string.dialog_sync_google_title))
+                .setMessage(getString(R.string.dialog_sync_google_message))
+                .setPositiveButton(getString(R.string.btn_yes), (dialog, which) -> {
                     setLoading(true);
                     firebaseAuthWithGoogle(account.getIdToken());
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> {
+                .setNegativeButton(getString(R.string.btn_skip), (dialog, which) -> {
                     googleClient.signOut();
                     setLoading(false);
                 })
@@ -193,11 +192,11 @@ public class LoginActivity extends AppCompatActivity {
                                     .addOnFailureListener(this::handleAuthError);
                         } else {
                             setLoading(false);
-                            Toast.makeText(this, "Error resolving username.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.msg_error_username), Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         setLoading(false);
-                        Toast.makeText(this, "Username not found. Please register.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.msg_username_not_found), Toast.LENGTH_LONG).show();
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -209,9 +208,9 @@ public class LoginActivity extends AppCompatActivity {
     private void showLoginSuccessDialog(FirebaseUser user) {
         setLoading(false);
         new AlertDialog.Builder(this)
-                .setTitle("Login Successful")
-                .setMessage("Welcome back! You have signed in successfully.")
-                .setPositiveButton("Continue", (dialog, which) -> checkProfileAndHeal(user))
+                .setTitle(getString(R.string.dialog_login_successful_title))
+                .setMessage(getString(R.string.dialog_welcome_back_message))
+                .setPositiveButton(getString(R.string.btn_ok), (dialog, which) -> checkProfileAndHeal(user))
                 .setCancelable(false)
                 .show();
     }
@@ -279,13 +278,13 @@ public class LoginActivity extends AppCompatActivity {
     private void handleAuthError(Exception e) {
         setLoading(false);
         if (e instanceof FirebaseNetworkException) {
-            Toast.makeText(this, "No internet connection. Check your network and try again.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.msg_no_internet_check), Toast.LENGTH_LONG).show();
         } else if (e instanceof FirebaseAuthInvalidCredentialsException || e instanceof FirebaseAuthInvalidUserException) {
-            Toast.makeText(this, "Incorrect login details. Please try again.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.msg_incorrect_login), Toast.LENGTH_LONG).show();
         } else if (e instanceof FirebaseTooManyRequestsException) {
-            Toast.makeText(this, "Too many attempts. Try again later.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.msg_too_many_attempts), Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this, "Authentication failed. Please try again.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.msg_auth_failed), Toast.LENGTH_LONG).show();
         }
     }
 
