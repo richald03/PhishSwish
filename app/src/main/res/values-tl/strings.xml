@@ -330,6 +330,7 @@
     <string name="label_detected_text">Natukoy na Teksto</string>
     <string name="tip_scan_instruction">Tip: I-scan ang SMS, email, papel, o mensahe sa screen.</string>
     <string name="btn_analyze">Suriin</string>
+    <string name="btn_copy">Kopyahin</string>
     <string name="msg_waiting_detection">Naghihintay ng deteksyon ng teksto</string>
     
     <!-- Overlay Labels -->
@@ -370,4 +371,110 @@
     <string name="source_paste">Paste Scan</string>
     <string name="source_inbox">Inbox Scan</string>
     <string name="source_ar">Camera Scan</string>
+
+    <!-- Delete Account -->
+    <string name="label_danger_zone">DANGER ZONE</string>
+    <string name="pref_delete_account">Tanggalin ang Account</string>
+    <string name="pref_delete_account_sub">Permanenteng alisin ang iyong account at data</string>
+    <string name="dialog_delete_account_title">Tanggalin ang Account</string>
+    <string name="dialog_delete_account_message">Sigurado ka bang gusto mong tanggalin ang iyong account?\n\nAng aksyong ito ay permanente at hindi na mababawi. Ang lahat ng iyong kasaysayan ng scan at personal na data ay permanenteng aalisin.</string>
+    <string name="dialog_delete_permanent_title">Kumpirmahin ang Pagtanggal ng Account</string>
+    <string name="dialog_delete_permanent_message">Mangyaring kumpirmahin na gusto mong permanenteng tanggalin ang iyong account. Aalisin nito ang lahat ng iyong data mula sa system.</string>
+    <string name="btn_delete_permanently">Permanenteng Tanggalin</string>
+    <string name="btn_delete_account">Tanggalin ang Account</string>
+    <string name="btn_back_custom">Bumalik</string>
+    <string name="msg_delete_account_success">Matagumpay na natanggal ang account.</string>
+    <string name="title_deletion_failed">Bigo ang Pagtanggal</string>
+    <string name="msg_delete_account_failed">Hindi namin matanggal ang iyong account sa ngayon. Pakisubukang muli mamaya.</string>
+
+    <!-- Login Additions -->
+    <string name="error_enter_username">Pakilagay ang iyong username.</string>
+    <string name="error_username_only">Pakilagay ang iyong username lamang. Para sa email login, gamitin ang Google Sign-In.</string>
+    <string name="error_enter_password">Ilagay ang iyong password.</string>
+    <string name="error_invalid_credentials">Mali ang email o password</string>
+    <string name="msg_google_synced">Matagumpay na nai-sync ang Google account.</string>
+    <string name="msg_welcome_google">Maligayang pagbabalik! Naka-sign in ka gamit ang Google.</string>
+    <string name="title_security_notice">Paunawa sa Seguridad</string>
+    <string name="msg_login_locked_initial">Para sa seguridad, ang pag-login ay pansamantalang ni-lock matapos ang maraming maling pagtatangka.\nMangyaring subukan muli pagkaraan ng 5 minuto.</string>
+    <string name="msg_login_locked_remaining">Para sa seguridad, ang pag-login ay pansamantalang ni-lock.\nMangyaring subukan muli pagkaraan ng %1$s.</string>
+    <string name="msg_incorrect_login_attempts">Mali ang mga detalye sa pag-login. Subukan muli.\nMayroon ka na lang %1$d na %2$s.</string>
+    <string name="attempt_singular">pagtatangka</string>
+    <string name="attempt_plural">mga pagtatangka</string>
+    <string name="unit_minute">minuto</string>
+    <string name="unit_minutes">mga minuto</string>
+    <string name="unit_second">segundo</string>
+    <string name="unit_seconds">mga segundo</string>
+    <string name="unit_and">at</string>
+    <string name="msg_something_went_wrong">May nagkamali.</string>
+
+    <!-- Register Additions -->
+    <string name="btn_verify_text">I-verify</string>
+    <string name="msg_passwords_match">Nagtutugma ang mga password</string>
+    <string name="msg_passwords_dont_match">Hindi nagtutugma ang mga password</string>
+    <string name="error_email_required">Kailangan ang email</string>
+    <string name="error_email_invalid">Maling format ng email</string>
+    <string name="msg_verification_email_sent">Naipadala na ang verification email. Pakisuri ang iyong inbox.</string>
+    <string name="error_verification_email_failed">Nabigong ipadala ang verification email</string>
+    <string name="error_email_exists">Gumamit ng ibang email</string>
+    <string name="error_checking_email">Error sa pagsusuri ng email</string>
+    <string name="msg_verify_email_first">Pakisuri muna ang iyong email</string>
+    <string name="error_username_required">Pakipili ng username.</string>
+    <string name="error_username_too_short">Ang username ay dapat na hindi bababa sa 3 karakter.</string>
+    <string name="error_username_too_long">Ang username ay hindi dapat lumampas sa 20 karakter.</string>
+    <string name="error_username_spaces">Ang username ay hindi dapat maglaman ng mga puwang.</string>
+    <string name="error_email_recovery">Kailangan ang email para sa pagbawi ng password.</string>
+    <string name="error_password_strength">Ang password ay dapat na 8+ karakter na may malaki at maliit na titik, numero, at simbolo.</string>
+    <string name="error_confirm_password">Pakikumpirma ang iyong password.</string>
+    <string name="error_passwords_mismatch">Hindi nagtutugma ang mga password. Pakilagay muli.</string>
+    <string name="error_username_taken">Ang username ay nakuha na. Pumili ng iba.</string>
+    <string name="error_registration_internet">Bigo ang rehistrasyon. Suriin ang iyong koneksyon sa internet.</string>
+    <string name="error_password_requirements">Hindi natutugunan ng password ang mga kinakailangan sa seguridad.</string>
+    <string name="error_email_already_registered">Ang email na ito ay nakarehistro na. Pakisubukang mag-login na lang.</string>
+
+    <!-- Camera Scan Additions -->
+    <string name="msg_no_text_found">Walang nahanap na teksto sa loob ng scanner box.</string>
+    <string name="msg_copied_clipboard">Nakopya sa clipboard</string>
+    <string name="title_confirm_sender">Kumpirmahin ang Nagpadala</string>
+    <string name="msg_confirm_sender_name">Pakikumpirma o ilagay ang pangalan ng nagpadala.</string>
+    <string name="prompt_voice_search">Sabihin ang nagpadala o nilalaman ng mensahe...</string>
+
+    <!-- Time Ago -->
+    <string name="time_just_now">Ngayon lang</string>
+    <string name="time_mins_ago">%1$d minuto ang nakalipas</string>
+    <string name="time_hrs_ago">%1$d oras ang nakalipas</string>
+    <string name="msg_last_scan_format">AI-Powered Detection. Huling scan: %1$s.</string>
+    <!-- End of Time Ago duplicates removed -->
+
+
+    <!-- Result Additions -->
+    <string name="label_verdict">VERDICT: %1$s</string>
+    <string name="msg_analyzing_ai">Sinusuri gamit ang AI...</string>
+    <string name="error_ai_internet">Ang pagsusuri ng AI ay nangangailangan ng koneksyon sa internet. Mangyaring kumonekta muli at subukan uli.</string>
+    <string name="error_ai_config">Hindi maayos ang pagkaka-configure ng AI Analysis. Mangyaring makipag-ugnayan sa suporta.</string>
+    <string name="error_ai_failed">Hindi makapagsuri sa ngayon. Pakisubukang muli.</string>
+    <string name="label_link_status">Katayuan ng Link: %1$s</string>
+    <string name="status_safe">Ligtas</string>
+    <string name="status_harmful">Mapanganib</string>
+    <string name="status_unknown">Hindi Alam</string>
+    <string name="status_checking">Sinusuri...</string>
+    <string name="status_no_internet">Hindi Alam (walang internet)</string>
+    <string name="error_ai_entry_unavailable">Ang pagsusuri ng AI para sa entry na ito ay hindi available.</string>
+    <string name="msg_confirm_link_open">Sigurado ka bang gusto mong buksan ang link na ito?\n\n%1$s</string>
+    <string name="msg_static_recommendation">Manatiling maingat at i-verify ang nagpadala bago kumilos.</string>
+
+    <!-- Layout element strings -->
+    <string name="title_paste_scan_header">Paste Scan</string>
+    <string name="title_extracted_text">Nakuha na Teksto</string>
+    <string name="btn_analyze_text">Suriin ang teksto</string>
+    <string name="msg_edit_extracted_text">Pakisuri o i-edit ang nakuha na teksto sa itaas bago suriin.</string>
+    <string name="label_detected_sender_title">Natukoy na Nagpadala</string>
+    <string name="badge_encrypted_secure">ENCRYPTED at SECURE</string>
+    <string name="badge_footer">Bersyon 2.4.0 • Binuo gamit ang Rule-Based Intelligence</string>
+    <string name="status_safe_check">✓ LIGTAS</string>
+    <string name="status_spam_check">⚠ SPAM</string>
+    <string name="status_scam_check">✖ SCAM</string>
+    <string name="label_sender_unknown">Nagpadala: Hindi Alam</string>
+    <string name="label_secure_message">Ligtas na Mensahe</string>
+    <string name="label_suspicious_content">Kahina-hinalang Nilalaman</string>
+    <string name="label_high_threat">Mataas na Banta ang Natukoy</string>
 </resources>

@@ -1,59 +1,72 @@
-# PhishSwish 🛡️
+# PhishSwish
 
-**PhishSwish** is a powerful Android application designed to protect users from phishing attacks, scam links, and malicious content. By leveraging advanced AI, real-time scanning, and threat intelligence, PhishSwish provides a comprehensive shield for your digital communications.
+PhishSwish is an Android application focused on phishing and scam message detection. It combines OCR, AI-assisted text analysis, and URL reputation checks to help users evaluate suspicious content before interacting with links.
 
-## 🚀 Key Features
+## Features
 
-*   **Multi-Mode Scanning**:
-    *   **AR/Camera Scan**: Use your camera to scan physical or on-screen text for malicious URLs. Powered by ML Kit OCR and CameraX.
-    *   **Inbox Scan**: Integration with your emails to detect suspicious messages and phishing attempts.
-    *   **Paste Scan**: Quickly analyze links or text copied from anywhere on your device.
-*   **AI-Powered Analysis**: Utilizes **Gemini AI** to perform deep linguistic and contextual analysis of suspicious messages.
-*   **Real-Time Threat Intel**: Integrates with the **VirusTotal API** to check URLs against global databases of known threats.
-*   **Brute-Force Protection**: Robust login security with automatic lockout mechanisms to prevent unauthorized access.
-*   **Secure Authentication**: Seamless login and registration using Firebase Auth, including Google Sign-In integration.
-*   **History & Tracking**: Keep track of your past scans and threats detected for future reference.
+- Camera Scan: Capture on-screen or printed messages and extract text using ML Kit OCR.
+- Inbox Scan: Review SMS content for suspicious patterns and risky links.
+- Paste Scan: Analyze manually pasted text or URLs.
+- AI Analysis: Uses Gemini for contextual phishing assessment.
+- URL Reputation Check: Uses VirusTotal API for link safety signals.
+- Scan History: Keeps previous scan results for quick review.
+- Account Security: Includes login lockout rules to reduce brute-force risk.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-*   **Language**: Java
-*   **Architecture**: Android Jetpack (Activity/Fragment, ViewModels, Navigation)
-*   **Database**: Firebase Firestore for cloud data and user tracking.
-*   **AI/ML**: 
-    *   Gemini AI (Generative Analysis)
-    *   ML Kit (Text Recognition/OCR)
-*   **Networking**: OkHttp
-*   **Security**: Firebase Auth, Google Identity Services, Secure SharedPreferences.
+- Language: Java
+- Platform: Android (minSdk 24, targetSdk 36)
+- UI: Material Components + AndroidX
+- Cloud/Auth: Firebase Authentication and Firestore
+- AI/ML: Gemini API, ML Kit Text Recognition
+- Networking: OkHttp
+- Camera: CameraX
 
-## 🛠️ Setup & Implementation
+## Getting Started
 
 ### Prerequisites
-- Android Studio Ladybug (or newer)
-- JDK 11+
-- Firebase Project setup
 
-### Configuration
-1.  **Firebase**: Add your `google-services.json` to the `app/` directory.
-2.  **API Keys**: Add the following keys to your `local.properties` file:
-    ```properties
-    GEMINI_API_KEY_1=your_key_here
-    VT_API_KEY=your_key_here
-    ```
-    *(Refer to `app/build.gradle.kts` for full key rotation setup)*
+- Android Studio (latest stable recommended)
+- JDK 11 or newer
+- Android SDK configured
+- Firebase project for authentication and Firestore
 
-## 📂 Project Structure
+### Setup
 
-- `ui/`: All Activity and Fragment implementations (Login, Register, Scanners, Results).
-- `utils/`: Core logic helpers including `LoginAttemptManager`, `UrlExtractor`, and `LanguageManager`.
-- `adapters/`: RecyclerView adapters for history and list displays.
+1. Clone the repository.
+2. Add your Firebase config file:
+   - Place `google-services.json` in `app/`
+3. Configure local API keys in `local.properties` (do not commit this file):
 
-## 🔒 Security Measures
+```properties
+VT_API_KEY=your_virustotal_key
+GEMINI_API_KEY_1=your_gemini_key
+GEMINI_API_KEY_2=optional_key
+GEMINI_API_KEY_3=optional_key
+GEMINI_API_KEY_4=optional_key
+GEMINI_API_KEY_5=optional_key
+GEMINI_API_KEY_6=optional_key
+```
 
-PhishSwish implements a strict anti-brute-force system:
-- Maximum 3 failed login attempts.
-- 5-minute lockout period with real-time countdown.
-- Real-time password matching validation on registration.
+4. Build and run:
 
----
+```bash
+./gradlew assembleDebug
+```
 
-**Developed with ❤️ to keep you safe from phishing.**
+## Security Notes
+
+- Never commit `local.properties`, `google-services.json`, keystores, or any `.env` file.
+- API keys are injected from local configuration into `BuildConfig` at build time.
+- Rotate any leaked keys immediately and update your local configuration.
+
+## Project Structure
+
+- `app/src/main/java/com/example/phishswish/ui`: Activities and UI flows.
+- `app/src/main/java/com/example/phishswish/ui/adapters`: RecyclerView adapters.
+- `app/src/main/java/com/example/phishswish/utils`: Helper and utility classes.
+- `app/src/main/res`: Layouts, drawables, and localized strings.
+
+## License
+
+This project is currently unlicensed. Add a license file before public distribution if needed.

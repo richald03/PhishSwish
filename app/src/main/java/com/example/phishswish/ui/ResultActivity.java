@@ -159,13 +159,13 @@ public class ResultActivity extends BaseActivity {
         if (result == null) return;
         showLoading();
         if (!isOnline()) {
-            showError("AI analysis requires an internet connection. Please reconnect and try again.");
+            showError(getString(R.string.error_ai_internet));
             return;
         }
 
         GeminiKeyManager keyManager = new GeminiKeyManager();
         if (keyManager.getKeyCount() == 0) {
-            showError("AI Analysis is not configured properly. Please contact support.");
+            showError(getString(R.string.error_ai_config));
             return;
         }
 
@@ -272,7 +272,7 @@ public class ResultActivity extends BaseActivity {
                     Log.e("Gemini", "Failed to parse Gemini JSON", e);
                     Log.e("Gemini", "Raw Gemini output:\n" + analysis);
                     runOnUiThread(() ->
-                            showError("Unable to analyze right now. Please try again.")
+                            showError(getString(R.string.error_ai_failed))
                     );
                 }
             }
@@ -281,14 +281,14 @@ public class ResultActivity extends BaseActivity {
             public void onError(String error) {
                 Log.e("Gemini", "Gemini failed: " + error);
                 runOnUiThread(() ->
-                        showError("Unable to analyze right now. Please try again.")
+                        showError(getString(R.string.error_ai_failed))
                 );
             }
         });
     }
 
     private String getStaticRecommendation() {
-        return "Stay cautious and verify the sender before acting.";
+        return getString(R.string.msg_static_recommendation);
     }
 
     /**
@@ -302,7 +302,7 @@ public class ResultActivity extends BaseActivity {
 
         // Ensure theming is always consistent with category.
         if (tvLabel != null) {
-            tvLabel.setText(String.format(Locale.getDefault(), "VERDICT: %s", verdict));
+            tvLabel.setText(getString(R.string.label_verdict, verdict));
             tvLabel.setVisibility(View.VISIBLE);
         }
         applyTheme(verdict);
@@ -393,7 +393,7 @@ public class ResultActivity extends BaseActivity {
             tvLabel.setVisibility(View.INVISIBLE);
         }
         if (tvReasons != null) {
-            tvReasons.setText("Analyzing with AI...");
+            tvReasons.setText(getString(R.string.msg_analyzing_ai));
             tvReasons.setVisibility(View.VISIBLE);
         }
         if (tvRecommendation != null) {
@@ -495,7 +495,7 @@ public class ResultActivity extends BaseActivity {
 
     private void checkLink(String url) {
         if (!isOnline()) {
-            if (tvLinkStatus != null) tvLinkStatus.setText("Link Status: Unknown (no internet)");
+            if (tvLinkStatus != null) tvLinkStatus.setText(getString(R.string.label_link_status, getString(R.string.status_no_internet)));
             return;
         }
         String urlForVirusTotal = (url != null) ? url.trim() : "";
@@ -510,7 +510,7 @@ public class ResultActivity extends BaseActivity {
         }
 
         if (tvLinkStatus != null) {
-            tvLinkStatus.setText("Link Status: Checking...");
+            tvLinkStatus.setText(getString(R.string.label_link_status, getString(R.string.status_checking)));
             tvLinkStatus.setTextColor(Color.GRAY);
         }
 
@@ -538,8 +538,12 @@ public class ResultActivity extends BaseActivity {
         }
         
         tvLinkStatus.setVisibility(View.VISIBLE);
-        String displayStatus = cleanStatus.substring(0, 1).toUpperCase(java.util.Locale.ROOT) + cleanStatus.substring(1);
-        tvLinkStatus.setText("Link Status: " + displayStatus);
+        String displayStatus = "";
+        if ("safe".equals(cleanStatus)) displayStatus = getString(R.string.status_safe);
+        else if ("harmful".equals(cleanStatus)) displayStatus = getString(R.string.status_harmful);
+        else displayStatus = getString(R.string.status_unknown);
+        
+        tvLinkStatus.setText(getString(R.string.label_link_status, displayStatus));
         
         if ("safe".equals(cleanStatus)) {
             tvLinkStatus.setTextColor(Color.parseColor("#16A34A"));
@@ -629,23 +633,24 @@ public class ResultActivity extends BaseActivity {
             );
             showSuccess(model);
         } catch (Exception e) {
-            showError("AI analysis for this entry is not available.");
+            showError(getString(R.string.error_ai_entry_unavailable));
         }
     }
 
     private void showSecurityWarning(String url) {
-        String statusText = (tvLinkStatus != null) ? tvLinkStatus.getText().toString() : "Link Status: UNKNOWN";
+        String statusText = (tvLinkStatus != null) ? tvLinkStatus.getText().toString() : getString(R.string.label_link_status, getString(R.string.status_unknown));
         int statusColor = (tvLinkStatus != null) ? tvLinkStatus.getCurrentTextColor() : Color.GRAY;
 
-        SpannableString spannableMessage = new SpannableString("Are you sure you want to open this link?\n\n" + statusText);
-        int start = spannableMessage.toString().indexOf(statusText);
+        String rawMsg = getString(R.string.msg_confirm_link_open, statusText);
+        SpannableString spannableMessage = new SpannableString(rawMsg);
+        int start = rawMsg.indexOf(statusText);
         if (start != -1) {
             spannableMessage.setSpan(new ForegroundColorSpan(statusColor), start, start + statusText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.dialog_confirm_link_open_title))
-                .setMessage(getString(R.string.dialog_confirm_link_open_message))
+                .setMessage(spannableMessage)
                 .setPositiveButton(getString(R.string.btn_yes_open), (dialog, which) -> {
                     try {
                         Intent i = new Intent(Intent.ACTION_VIEW);

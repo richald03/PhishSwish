@@ -202,7 +202,7 @@ public class RegisterActivity extends BaseActivity {
                     cancelVerificationTimer();
                     tvVerifyEmail.setVisibility(View.VISIBLE);
                     tvVerifyEmail.setEnabled(true);
-                    tvVerifyEmail.setText("Verify");
+                    tvVerifyEmail.setText(getString(R.string.btn_verify_text));
                     ivEmailVerified.setVisibility(View.GONE);
                     pollingHandler.removeCallbacks(pollingRunnable);
                 }
@@ -225,7 +225,7 @@ public class RegisterActivity extends BaseActivity {
         int iconSize = (int) (16 * getResources().getDisplayMetrics().density);
         
         if (pass.equals(confirm)) {
-            tvPasswordMatch.setText("Passwords match");
+            tvPasswordMatch.setText(getString(R.string.msg_passwords_match));
             tvPasswordMatch.setTextColor(ContextCompat.getColor(this, R.color.safe_blue));
             Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_dot_green);
             if (icon != null) {
@@ -233,7 +233,7 @@ public class RegisterActivity extends BaseActivity {
                 tvPasswordMatch.setCompoundDrawables(icon, null, null, null);
             }
         } else {
-            tvPasswordMatch.setText("Passwords do not match");
+            tvPasswordMatch.setText(getString(R.string.msg_passwords_dont_match));
             tvPasswordMatch.setTextColor(ContextCompat.getColor(this, R.color.scam_red));
             Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_dot_red);
             if (icon != null) {
@@ -246,11 +246,11 @@ public class RegisterActivity extends BaseActivity {
     private void verifyEmailAction() {
         String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
         if (TextUtils.isEmpty(email)) {
-            tilEmail.setError("Email is required");
+            tilEmail.setError(getString(R.string.error_email_required));
             return;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilEmail.setError("Invalid email format");
+            tilEmail.setError(getString(R.string.error_email_invalid));
             return;
         }
         
@@ -267,15 +267,15 @@ public class RegisterActivity extends BaseActivity {
                         setLoading(false);
                         if (task.isSuccessful()) {
                             currentEmailState = EmailState.PENDING_VERIFICATION;
-                            Toast.makeText(RegisterActivity.this, "Verification email sent. Please check your inbox.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(RegisterActivity.this, getString(R.string.msg_verification_email_sent), Toast.LENGTH_LONG).show();
                             pollingHandler.removeCallbacks(pollingRunnable);
                             pollingHandler.postDelayed(pollingRunnable, 3000);
                             startVerificationTimer();
                         } else {
                             user.delete();
-                            tilEmail.setError("Failed to send verification email");
+                            tilEmail.setError(getString(R.string.error_verification_email_failed));
                             tvVerifyEmail.setEnabled(true);
-                            tvVerifyEmail.setText("Verify");
+                            tvVerifyEmail.setText(getString(R.string.btn_verify_text));
                         }
                     });
                 } else {
@@ -287,12 +287,12 @@ public class RegisterActivity extends BaseActivity {
                 setLoading(false);
                 if (e instanceof FirebaseAuthUserCollisionException) {
                     currentEmailState = EmailState.EXISTS;
-                    tilEmail.setError("Use another email");
+                    tilEmail.setError(getString(R.string.error_email_exists));
                 } else {
-                    tilEmail.setError("Error checking email");
+                    tilEmail.setError(getString(R.string.error_checking_email));
                 }
                 tvVerifyEmail.setEnabled(true);
-                tvVerifyEmail.setText("Verify");
+                tvVerifyEmail.setText(getString(R.string.btn_verify_text));
             });
     }
 
@@ -314,7 +314,7 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onFinish() {
                 if (currentEmailState != EmailState.VERIFIED) {
-                    tvVerifyEmail.setText("Verify");
+                    tvVerifyEmail.setText(getString(R.string.btn_verify_text));
                     tvVerifyEmail.setEnabled(true);
                 }
             }
@@ -346,7 +346,7 @@ public class RegisterActivity extends BaseActivity {
 
     private void validateAndRegister() {
         if (currentEmailState != EmailState.VERIFIED) {
-            Toast.makeText(this, "Please verify your email first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.msg_verify_email_first), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -355,28 +355,28 @@ public class RegisterActivity extends BaseActivity {
         String pass = etPassword.getText() != null ? etPassword.getText().toString() : "";
         String confirm = etConfirm.getText() != null ? etConfirm.getText().toString() : "";
 
-        if (TextUtils.isEmpty(username)) { tilUsername.setError("Please choose a username."); return; }
-        if (username.length() < 3) { tilUsername.setError("Username must be at least 3 characters."); return; }
-        if (username.length() > 20) { tilUsername.setError("Username cannot exceed 20 characters."); return; }
-        if (username.contains(" ")) { tilUsername.setError("Username must not contain spaces."); return; }
+        if (TextUtils.isEmpty(username)) { tilUsername.setError(getString(R.string.error_username_required)); return; }
+        if (username.length() < 3) { tilUsername.setError(getString(R.string.error_username_too_short)); return; }
+        if (username.length() > 20) { tilUsername.setError(getString(R.string.error_username_too_long)); return; }
+        if (username.contains(" ")) { tilUsername.setError(getString(R.string.error_username_spaces)); return; }
 
         if (TextUtils.isEmpty(email)) {
-            tilEmail.setError("Email is required for password recovery.");
+            tilEmail.setError(getString(R.string.error_email_recovery));
             return;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilEmail.setError("Enter a valid email address.");
+            tilEmail.setError(getString(R.string.error_email_invalid));
             return;
         }
 
-        if (TextUtils.isEmpty(pass)) { tilPassword.setError("Create a strong password to secure your account."); return; }
+        if (TextUtils.isEmpty(pass)) { tilPassword.setError(getString(R.string.error_enter_password)); return; }
         if (!isPasswordStrong(pass)) {
-            tilPassword.setError("Password must be 8+ characters with uppercase, lowercase, number, and symbol.");
+            tilPassword.setError(getString(R.string.error_password_strength));
             return;
         }
 
-        if (TextUtils.isEmpty(confirm)) { tilConfirm.setError("Please confirm your password."); return; }
-        if (!pass.equals(confirm)) { tilConfirm.setError("Passwords do not match. Please re-enter."); return; }
+        if (TextUtils.isEmpty(confirm)) { tilConfirm.setError(getString(R.string.error_confirm_password)); return; }
+        if (!pass.equals(confirm)) { tilConfirm.setError(getString(R.string.error_passwords_mismatch)); return; }
 
         checkUsernameUniqueness(username, email, pass);
     }
@@ -388,7 +388,7 @@ public class RegisterActivity extends BaseActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         setLoading(false);
-                        tilUsername.setError("Username already taken. Choose another.");
+                        tilUsername.setError(getString(R.string.error_username_taken));
                     } else {
                         performAuthRegistration(username, email, pass);
                     }
@@ -502,7 +502,7 @@ public class RegisterActivity extends BaseActivity {
     private void recreateProfile(FirebaseUser user, boolean isFirstTime) {
         Map<String, Object> profile = new HashMap<>();
         String email = user.getEmail() != null ? user.getEmail() : "";
-        String username = (user.getDisplayName() != null && !user.getDisplayName().isEmpty()) ? user.getDisplayName() : "User";
+        String username = (user.getDisplayName() != null && !user.getDisplayName().isEmpty()) ? user.getDisplayName() : getString(R.string.default_user);
         
         profile.put("username", username);
         profile.put("email", email);
@@ -546,18 +546,18 @@ public class RegisterActivity extends BaseActivity {
 
     private String friendlyAuthError(Exception e) {
         if (e instanceof FirebaseNetworkException) {
-            return "Registration failed. Check your internet connection.";
+            return getString(R.string.error_registration_internet);
         }
         if (e instanceof FirebaseAuthWeakPasswordException) {
-            return "Password does not meet security requirements.";
+            return getString(R.string.error_password_requirements);
         }
         if (e instanceof FirebaseAuthUserCollisionException) {
-            return "This email is already registered. Please login instead.";
+            return getString(R.string.error_email_already_registered);
         }
         if (e instanceof FirebaseTooManyRequestsException) {
-            return "Too many requests. Please try again later.";
+            return getString(R.string.error_too_many_requests);
         }
-        return "Registration failed. Please try again.";
+        return getString(R.string.msg_registration_failed);
     }
 
     private void goHome() {

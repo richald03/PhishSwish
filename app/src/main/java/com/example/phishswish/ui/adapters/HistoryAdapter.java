@@ -90,21 +90,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             String label = scan.label != null ? scan.label.toUpperCase() : "SAFE";
             
             if ("SAFE".equals(label)) {
-                tvLabel.setText("Secure Message");
+                tvLabel.setText(itemView.getContext().getString(R.string.label_secure_message));
                 tvLabel.setTextColor(Color.parseColor("#111827"));
                 ivCategoryIcon.setImageResource(R.drawable.ic_safe);
                 flCategoryIcon.setBackgroundResource(R.drawable.bg_circle_safe);
                 tvConfidence.setTextColor(Color.parseColor("#16A34A"));
                 tvConfidence.setBackgroundResource(R.drawable.bg_chip_online);
             } else if ("SPAM".equals(label)) {
-                tvLabel.setText("Suspicious Content");
+                tvLabel.setText(itemView.getContext().getString(R.string.label_suspicious_content));
                 tvLabel.setTextColor(Color.parseColor("#111827"));
                 ivCategoryIcon.setImageResource(R.drawable.ic_spam);
                 flCategoryIcon.setBackgroundResource(R.drawable.bg_circle_spam);
                 tvConfidence.setTextColor(Color.parseColor("#F59E0B"));
                 tvConfidence.setBackgroundResource(R.drawable.bg_chip_online);
             } else {
-                tvLabel.setText("High Threat Detected");
+                tvLabel.setText(itemView.getContext().getString(R.string.label_high_threat));
                 tvLabel.setTextColor(Color.parseColor("#111827"));
                 ivCategoryIcon.setImageResource(R.drawable.ic_scam);
                 flCategoryIcon.setBackgroundResource(R.drawable.bg_circle_scam);

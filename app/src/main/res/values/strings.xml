@@ -331,8 +331,8 @@
     <string name="label_detected_text">Detected Text</string>
     <string name="tip_scan_instruction">Tip: Scan an SMS, email, paper, or on-screen message.</string>
     <string name="btn_analyze">Analyze</string>
+    <string name="btn_copy">Copy</string>
     <string name="msg_waiting_detection">Waiting for text detection</string>
-    <string name="tip_frozen_instruction">Tap or drag words to highlight</string>
     
     <!-- Overlay Labels -->
     <string name="overlay_url_detected">Suspicious URL detected</string>
@@ -372,4 +372,110 @@
     <string name="source_paste">Paste Scan</string>
     <string name="source_inbox">Inbox Scan</string>
     <string name="source_ar">Camera Scan</string>
+    
+    <!-- Delete Account -->
+    <string name="label_danger_zone">DANGER ZONE</string>
+    <string name="pref_delete_account">Delete Account</string>
+    <string name="pref_delete_account_sub">Permanently remove your account and data</string>
+    <string name="dialog_delete_account_title">Delete Account</string>
+    <string name="dialog_delete_account_message">Are you sure you want to delete your account?\n\nThis action is permanent and cannot be undone. All your scan history and personal data will be permanently removed.</string>
+    <string name="dialog_delete_permanent_title">Confirm Account Deletion</string>
+    <string name="dialog_delete_permanent_message">Please confirm that you want to permanently delete your account. This will remove all your data from the system.</string>
+    <string name="btn_delete_permanently">Delete Permanently</string>
+    <string name="btn_delete_account">Delete Account</string>
+    <string name="btn_back_custom">Back</string>
+    <string name="msg_delete_account_success">Account deleted successfully.</string>
+    <string name="title_deletion_failed">Deletion Failed</string>
+    <string name="msg_delete_account_failed">We could not delete your account at this time. Please try again later.</string>
+
+    <!-- Login Additions -->
+    <string name="error_enter_username">Please enter your username.</string>
+    <string name="error_username_only">Please enter your username only. For email login, use Google Sign-In.</string>
+    <string name="error_enter_password">Enter your password.</string>
+    <string name="error_invalid_credentials">Invalid email or password</string>
+    <string name="msg_google_synced">Google account successfully synced in.</string>
+    <string name="msg_welcome_google">Welcome back! You have signed in with Google.</string>
+    <string name="title_security_notice">Security Notice</string>
+    <string name="msg_login_locked_initial">For security reasons, login has been temporarily locked after multiple failed attempts.\nPlease try again in 5 minutes.</string>
+    <string name="msg_login_locked_remaining">For security reasons, login is temporarily locked.\nPlease try again in %1$s.</string>
+    <string name="msg_incorrect_login_attempts">Incorrect login details. Please try again.\nYou have %1$d %2$s remaining.</string>
+    <string name="attempt_singular">attempt</string>
+    <string name="attempt_plural">attempts</string>
+    <string name="unit_minute">minute</string>
+    <string name="unit_minutes">minutes</string>
+    <string name="unit_second">second</string>
+    <string name="unit_seconds">seconds</string>
+    <string name="unit_and">and</string>
+    <string name="msg_something_went_wrong">Something went wrong.</string>
+
+    <!-- Register Additions -->
+    <string name="btn_verify_text">Verify</string>
+    <string name="msg_passwords_match">Passwords match</string>
+    <string name="msg_passwords_dont_match">Passwords do not match</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_email_invalid">Invalid email format</string>
+    <string name="msg_verification_email_sent">Verification email sent. Please check your inbox.</string>
+    <string name="error_verification_email_failed">Failed to send verification email</string>
+    <string name="error_email_exists">Use another email</string>
+    <string name="error_checking_email">Error checking email</string>
+    <string name="msg_verify_email_first">Please verify your email first</string>
+    <string name="error_username_required">Please choose a username.</string>
+    <string name="error_username_too_short">Username must be at least 3 characters.</string>
+    <string name="error_username_too_long">Username cannot exceed 20 characters.</string>
+    <string name="error_username_spaces">Username must not contain spaces.</string>
+    <string name="error_email_recovery">Email is required for password recovery.</string>
+    <string name="error_password_strength">Password must be 8+ characters with uppercase, lowercase, number, and symbol.</string>
+    <string name="error_confirm_password">Please confirm your password.</string>
+    <string name="error_passwords_mismatch">Passwords do not match. Please re-enter.</string>
+    <string name="error_username_taken">Username already taken. Choose another.</string>
+    <string name="error_registration_internet">Registration failed. Check your internet connection.</string>
+    <string name="error_password_requirements">Password does not meet security requirements.</string>
+    <string name="error_email_already_registered">This email is already registered. Please login instead.</string>
+
+    <!-- Camera Scan Additions -->
+    <string name="msg_no_text_found">No text found within scanner box.</string>
+    <string name="msg_copied_clipboard">Copied to clipboard</string>
+    <string name="title_confirm_sender">Confirm Sender</string>
+    <string name="msg_confirm_sender_name">Please confirm or enter the sender name.</string>
+    <string name="prompt_voice_search">Say sender or message content...</string>
+
+    <!-- Time Ago -->
+    <string name="time_just_now">Just now</string>
+    <string name="time_mins_ago">%1$d mins ago</string>
+    <string name="time_hrs_ago">%1$d hrs ago</string>
+    <string name="msg_last_scan_format">AI-Powered Detection. Last scan: %1$s.</string>
+    <!-- End of Time Ago duplicates removed -->
+
+
+    <!-- Result Additions -->
+    <string name="label_verdict">VERDICT: %1$s</string>
+    <string name="msg_analyzing_ai">Analyzing with AI...</string>
+    <string name="error_ai_internet">AI analysis requires an internet connection. Please reconnect and try again.</string>
+    <string name="error_ai_config">AI Analysis is not configured properly. Please contact support.</string>
+    <string name="error_ai_failed">Unable to analyze right now. Please try again.</string>
+    <string name="label_link_status">Link Status: %1$s</string>
+    <string name="status_safe">Safe</string>
+    <string name="status_harmful">Harmful</string>
+    <string name="status_unknown">Unknown</string>
+    <string name="status_checking">Checking...</string>
+    <string name="status_no_internet">Unknown (no internet)</string>
+    <string name="error_ai_entry_unavailable">AI analysis for this entry is not available.</string>
+    <string name="msg_confirm_link_open">Are you sure you want to open this link?\n\n%1$s</string>
+    <string name="msg_static_recommendation">Stay cautious and verify the sender before acting.</string>
+
+    <!-- Layout element strings -->
+    <string name="title_paste_scan_header">Paste Scan</string>
+    <string name="title_extracted_text">Extracted Text</string>
+    <string name="btn_analyze_text">Analyze text</string>
+    <string name="msg_edit_extracted_text">Verify or edit the extracted text above before analyzing.</string>
+    <string name="label_detected_sender_title">Detected Sender</string>
+    <string name="badge_encrypted_secure">ENCRYPTED &amp; SECURE</string>
+    <string name="badge_footer">Version 2.4.0 • Built with Rule-Based Intelligence</string>
+    <string name="status_safe_check">✓ SAFE</string>
+    <string name="status_spam_check">⚠ SPAM</string>
+    <string name="status_scam_check">✖ SCAM</string>
+    <string name="label_sender_unknown">Sender: Unknown</string>
+    <string name="label_secure_message">Secure Message</string>
+    <string name="label_suspicious_content">Suspicious Content</string>
+    <string name="label_high_threat">High Threat Detected</string>
 </resources>

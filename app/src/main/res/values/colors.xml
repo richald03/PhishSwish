@@ -12,6 +12,7 @@
     <color name="nav_bg">#FFFFFF</color>
 
     <!-- Brand / Functional -->
+    <color name="primary_blue">#3B82F6</color>
     <color name="home_primary">#3B82F6</color>
     <color name="home_bg">#F6F8FC</color>
     <color name="text_dark">#111827</color>

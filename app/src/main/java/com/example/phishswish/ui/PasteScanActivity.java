@@ -180,7 +180,7 @@ public class PasteScanActivity extends BaseActivity {
                 .addSnapshotListener((value, error) -> {
                     if (error != null || value == null || value.isEmpty()) {
                         if (tvLastScanStatus != null) {
-                            tvLastScanStatus.setText("AI-Powered Detection. No scans yet.");
+                            tvLastScanStatus.setText(getString(R.string.msg_no_scans_yet));
                         }
                         return;
                     }
@@ -197,7 +197,7 @@ public class PasteScanActivity extends BaseActivity {
                     if (timestamp > 0) {
                         String timeAgo = getTimeAgo(timestamp);
                         if (tvLastScanStatus != null) {
-                            tvLastScanStatus.setText("AI-Powered Detection. Last scan: " + timeAgo + ".");
+                            tvLastScanStatus.setText(getString(R.string.msg_last_scan_format, timeAgo));
                         }
                     }
                 });
@@ -206,9 +206,9 @@ public class PasteScanActivity extends BaseActivity {
     private String getTimeAgo(long time) {
         long now = System.currentTimeMillis();
         long diff = now - time;
-        if (diff < 60 * 1000) return "Just now";
-        if (diff < 60 * 60 * 1000) return (diff / (60 * 1000)) + " mins ago";
-        if (diff < 24 * 60 * 60 * 1000) return (diff / (60 * 60 * 1000)) + " hrs ago";
+        if (diff < 60 * 1000) return getString(R.string.time_just_now);
+        if (diff < 60 * 60 * 1000) return getString(R.string.time_mins_ago, (int)(diff / (60 * 1000)));
+        if (diff < 24 * 60 * 60 * 1000) return getString(R.string.time_hrs_ago, (int)(diff / (60 * 60 * 1000)));
         return new SimpleDateFormat("MMM dd, h:mm a", Locale.getDefault()).format(new Date(time));
     }
 

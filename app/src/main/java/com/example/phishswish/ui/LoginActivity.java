@@ -121,7 +121,7 @@ public class LoginActivity extends BaseActivity {
                         setLoading(true);
                         googleLauncher.launch(googleClient.getSignInIntent());
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(getString(R.string.btn_cancel), null)
                     .show();
         });
         tvGoRegister.setOnClickListener(v -> navigateWithLoading(RegisterActivity.class));
@@ -170,17 +170,17 @@ public class LoginActivity extends BaseActivity {
         String pass = etPassword.getText() != null ? etPassword.getText().toString() : "";
 
         if (TextUtils.isEmpty(input)) {
-            tilUsername.setError("Please enter your username.");
+            tilUsername.setError(getString(R.string.error_enter_username));
             return;
         }
 
         if (input.contains("@")) {
-            tilUsername.setError("Please enter your username only. For email login, use Google Sign-In.");
+            tilUsername.setError(getString(R.string.error_username_only));
             return;
         }
 
         if (TextUtils.isEmpty(pass)) {
-            tilPassword.setError("Enter your password.");
+            tilPassword.setError(getString(R.string.error_enter_password));
             return;
         }
 
@@ -205,11 +205,11 @@ public class LoginActivity extends BaseActivity {
                                     .addOnFailureListener(this::handleAuthError);
                         } else {
                             setLoading(false);
-                            handleFailedAttempt("Invalid email or password");
+                            handleFailedAttempt(getString(R.string.error_invalid_credentials));
                         }
                     } else {
                         setLoading(false);
-                        handleFailedAttempt("Invalid email or password");
+                        handleFailedAttempt(getString(R.string.error_invalid_credentials));
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -234,13 +234,13 @@ public class LoginActivity extends BaseActivity {
         loginAttemptManager.resetAttempts();
         db.collection("users").document(user.getUid()).collection("profile").document("info").get()
                 .addOnSuccessListener(doc -> {
-                    String title = doc.exists() ? "Welcome Back" : "Account Synced";
-                    String message = doc.exists() ? "Welcome back! You have signed in with Google." : "Google account successfully synced in.";
+                    String title = doc.exists() ? getString(R.string.dialog_welcome_back_title) : getString(R.string.dialog_account_synced_title);
+                    String message = doc.exists() ? getString(R.string.msg_welcome_google) : getString(R.string.msg_google_synced);
                     
                     new AlertDialog.Builder(this)
                             .setTitle(title)
                             .setMessage(message)
-                            .setPositiveButton("Continue", (dialog, which) -> checkProfileAndHeal(user))
+                            .setPositiveButton(getString(R.string.btn_continue), (dialog, which) -> checkProfileAndHeal(user))
                             .setCancelable(false)
                             .show();
                 })
@@ -295,7 +295,7 @@ public class LoginActivity extends BaseActivity {
         if (e instanceof FirebaseNetworkException) {
             Toast.makeText(this, getString(R.string.msg_no_internet_check), Toast.LENGTH_LONG).show();
         } else if (e instanceof FirebaseAuthInvalidCredentialsException || e instanceof FirebaseAuthInvalidUserException) {
-            handleFailedAttempt("Invalid email or password");
+            handleFailedAttempt(getString(R.string.error_invalid_credentials));
         } else if (e instanceof FirebaseTooManyRequestsException) {
             Toast.makeText(this, getString(R.string.msg_too_many_attempts), Toast.LENGTH_LONG).show();
         } else {
@@ -309,7 +309,8 @@ public class LoginActivity extends BaseActivity {
             showLockoutDialog(true);
         } else {
             int remaining = loginAttemptManager.getRemainingAttempts();
-            String msg = "Incorrect login details. Please try again.\nYou have " + remaining + " attempt" + (remaining == 1 ? "" : "s") + " remaining.";
+            String attemptWord = remaining == 1 ? getString(R.string.attempt_singular) : getString(R.string.attempt_plural);
+            String msg = getString(R.string.msg_incorrect_login_attempts, remaining, attemptWord);
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
         }
     }
@@ -326,18 +327,19 @@ public class LoginActivity extends BaseActivity {
 
         String timeString;
         if (minutes > 0) {
-            timeString = minutes + " minute" + (minutes == 1 ? "" : "s") + " and " + seconds + " second" + (seconds == 1 ? "" : "s");
-            // If it's precisely 5:00 it might say "5 minutes and 0 seconds" -> better to say "5 minutes"
-            if (seconds == 0) timeString = minutes + " minute" + (minutes == 1 ? "" : "s");
+            String minWord = minutes == 1 ? getString(R.string.unit_minute) : getString(R.string.unit_minutes);
+            String secWord = seconds == 1 ? getString(R.string.unit_second) : getString(R.string.unit_seconds);
+            timeString = minutes + " " + minWord + (seconds > 0 ? " " + getString(R.string.unit_and) + " " + seconds + " " + secWord : "");
         } else {
-            timeString = seconds + " second" + (seconds == 1 ? "" : "s");
+            String secWord = seconds == 1 ? getString(R.string.unit_second) : getString(R.string.unit_seconds);
+            timeString = seconds + " " + secWord;
         }
 
         String message;
         if (justLocked) {
-            message = "For security reasons, login has been temporarily locked after multiple failed attempts.\nPlease try again in 5 minutes.";
+            message = getString(R.string.msg_login_locked_initial);
         } else {
-            message = "For security reasons, login is temporarily locked.\nPlease try again in " + timeString + ".";
+            message = getString(R.string.msg_login_locked_remaining, timeString);
         }
         
         showSecurityDialog(message);
@@ -345,14 +347,14 @@ public class LoginActivity extends BaseActivity {
     
     private void showSecurityDialog(String message) {
         new AlertDialog.Builder(this)
-                .setTitle("Security Notice")
+                .setTitle(getString(R.string.title_security_notice))
                 .setMessage(message)
                 .setPositiveButton(getString(R.string.btn_ok), null)
                 .show();
     }
     private String friendlyAuthError(Exception e) {
-        if (e instanceof FirebaseNetworkException) return "No internet connection.";
-        return "Something went wrong.";
+        if (e instanceof FirebaseNetworkException) return getString(R.string.msg_no_internet_check);
+        return getString(R.string.msg_something_went_wrong);
     }
 
     private void startLoadingEffect() {

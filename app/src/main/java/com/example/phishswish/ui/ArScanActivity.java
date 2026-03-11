@@ -356,7 +356,7 @@ public class ArScanActivity extends BaseActivity {
         btnCopy.setEnabled(!extracted.isEmpty());
         
         if (extracted.isEmpty()) {
-             tvDetectedText.setText("No text found within scanner box.");
+             tvDetectedText.setText(getString(R.string.msg_no_text_found));
         }
     }
 
@@ -395,7 +395,7 @@ public class ArScanActivity extends BaseActivity {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("Scanned Text", textToCopy);
             clipboard.setPrimaryClip(clip);
-            Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.msg_copied_clipboard), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -411,10 +411,10 @@ public class ArScanActivity extends BaseActivity {
         etSender.setText(detectedSender);
 
         androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Confirm Sender")
+                .setTitle(getString(R.string.title_confirm_sender))
                 .setView(dialogView)
-                .setPositiveButton("Continue", null)
-                .setNegativeButton("Back", (d, which) -> d.dismiss())
+                .setPositiveButton(getString(R.string.btn_continue), null)
+                .setNegativeButton(getString(R.string.btn_back_custom), (d, which) -> d.dismiss())
                 .setCancelable(false)
                 .create();
 
@@ -423,7 +423,7 @@ public class ArScanActivity extends BaseActivity {
             btnContinue.setOnClickListener(v -> {
                 String editedSender = etSender.getText().toString().trim();
                 if (editedSender.isEmpty()) {
-                    Toast.makeText(ArScanActivity.this, "Please confirm or enter the sender name.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ArScanActivity.this, getString(R.string.msg_confirm_sender_name), Toast.LENGTH_SHORT).show();
                 } else {
                     dialog.dismiss();
                     parsed.sender = editedSender;

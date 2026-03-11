@@ -162,7 +162,99 @@ public class SettingsActivity extends BaseActivity {
         }
 
         loadUserProfile();
+
+        // Delete Account Logic
+        View llDeleteAccount = findViewById(R.id.llDeleteAccount);
+        if (llDeleteAccount != null) {
+            llDeleteAccount.setOnClickListener(new SafeClickListener() {
+                @Override
+                public void onSafeClick(View v, Completion completion) {
+                    requireInternetOrShowMessage(() -> {
+                        showDeleteAccountConfirmation();
+                        completion.onComplete();
+                    });
+                }
+            });
+        }
     }
+
+    private void showDeleteAccountConfirmation() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.dialog_delete_account_title))
+                .setMessage(getString(R.string.dialog_delete_account_message))
+                .setPositiveButton(getString(R.string.btn_delete_account), (dialog, which) -> showDeletePermanentConfirmation())
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+                .show();
+    }
+
+    private void showDeletePermanentConfirmation() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.dialog_delete_permanent_title))
+                .setMessage(getString(R.string.dialog_delete_permanent_message))
+                .setPositiveButton(getString(R.string.btn_delete_permanently), (dialog, which) -> performAccountDeletion())
+                .setNegativeButton(getString(R.string.btn_back_custom), null)
+                .show();
+    }
+
+    private void performAccountDeletion() {
+        if (!isOnline()) return;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        setNavLoading(true);
+        String uid = user.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // 1. Delete Firestore Data
+        // Deleting subcollections is tricky in client SDK, but we'll delete known paths
+        db.collection("users").document(uid).collection("scans").get().addOnCompleteListener(task -> {
+            WriteBatch batch = db.batch();
+            if (task.isSuccessful() && task.getResult() != null) {
+                for (QueryDocumentSnapshot doc : task.getResult()) {
+                    batch.delete(doc.getReference());
+                }
+            }
+            
+            // Delete profile info
+            batch.delete(db.collection("users").document(uid).collection("profile").document("info"));
+            
+            // Delete the user root document (optional but good practice)
+            batch.delete(db.collection("users").document(uid));
+
+            batch.commit().addOnCompleteListener(batchTask -> {
+                // 2. Delete Auth Account
+                user.delete().addOnCompleteListener(deleteTask -> {
+                    setNavLoading(false);
+                    if (deleteTask.isSuccessful()) {
+                        Toast.makeText(this, getString(R.string.msg_delete_account_success), Toast.LENGTH_SHORT).show();
+                        
+                        // 3. Clear local state and redirect
+                        // Logout and clear task
+                        FirebaseAuth.getInstance().signOut();
+                        
+                        // Clear SharedPreferences if any (assuming BaseActivity or similar might handle it if present, 
+                        // but specifically redirecting to LoginActivity is requested)
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        // Deletion failed (might require re-authentication)
+                        showDeletionErrorDialog();
+                    }
+                });
+            });
+        });
+    }
+
+    private void showDeletionErrorDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.title_deletion_failed))
+                .setMessage(getString(R.string.msg_delete_account_failed))
+                .setPositiveButton(getString(R.string.btn_ok), null)
+                .show();
+    }
+
 
     @Override
     protected void onResume() {

@@ -154,11 +154,12 @@
                 android:id="@+id/bubbleCopy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="Copy"
+                android:text="@string/btn_copy"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                android:textSize="12sp"
+                android:drawableStart="@drawable/ic_copy"
+                android:drawablePadding="6dp"
+                android:padding="8dp" />
 
             <View
                 android:layout_width="1dp"
@@ -171,11 +172,12 @@
                 android:id="@+id/bubbleAnalyze"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="Analyze text"
+                android:text="@string/btn_analyze_text"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                android:textSize="12sp"
+                android:drawableStart="@drawable/ic_analyze"
+                android:drawablePadding="6dp"
+                android:padding="8dp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -229,9 +231,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Extracted Text"
-                android:textColor="@color/camera_instruction_text_color"
-                android:textSize="13sp"
+                android:text="@string/title_extracted_text"
+                android:textColor="@color/primary_blue"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <androidx.core.widget.NestedScrollView
@@ -266,10 +268,11 @@
                 android:background="#E5E7EB" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Verify or edit the extracted text above before analyzing."
-                android:textColor="@color/camera_instruction_text_color"
+                android:alpha="0.7"
+                android:text="@string/msg_edit_extracted_text"
+                android:textColor="?android:attr/textColorSecondary"
                 android:textSize="11sp" />
 
             <LinearLayout
@@ -280,18 +283,18 @@
 
                 <Button
                     android:id="@+id/btnCopy"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#6B7280"
-                    android:enabled="false"
-                    android:text="Copy"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:text="@string/btn_copy"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="16dp" />
+                    android:textColor="@color/primary_blue"
+                    android:textSize="13sp"
+                    app:icon="@drawable/ic_copy"
+                    app:iconSize="14dp"
+                    app:iconTint="@color/primary_blue" />
 
                 <Button
                     android:id="@+id/btnAnalyze"
