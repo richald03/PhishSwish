@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.phishswish.R;
 import com.example.phishswish.utils.LanguageManager;
+import com.example.phishswish.utils.LoginAttemptManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -48,6 +49,7 @@ public class LoginActivity extends BaseActivity {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private GoogleSignInClient googleClient;
+    private LoginAttemptManager loginAttemptManager;
 
     private TextInputLayout tilUsername, tilPassword;
     private TextInputEditText etUsername, etPassword;
@@ -83,6 +85,7 @@ public class LoginActivity extends BaseActivity {
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        loginAttemptManager = new LoginAttemptManager(this);
 
         if (auth.getCurrentUser() != null) {
             goHome();
@@ -123,6 +126,11 @@ public class LoginActivity extends BaseActivity {
         });
         tvGoRegister.setOnClickListener(v -> navigateWithLoading(RegisterActivity.class));
         tvForgot.setOnClickListener(v -> navigateWithLoading(ForgotPasswordActivity.class));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void setupTextWatchers() {
@@ -176,6 +184,11 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
+        if (loginAttemptManager.isLockedOut()) {
+            showLockoutDialog();
+            return;
+        }
+
         performLogin(input, pass);
     }
 
@@ -192,11 +205,11 @@ public class LoginActivity extends BaseActivity {
                                     .addOnFailureListener(this::handleAuthError);
                         } else {
                             setLoading(false);
-                            Toast.makeText(this, getString(R.string.msg_error_username), Toast.LENGTH_SHORT).show();
+                            handleFailedAttempt("Invalid email or password");
                         }
                     } else {
                         setLoading(false);
-                        Toast.makeText(this, getString(R.string.msg_username_not_found), Toast.LENGTH_LONG).show();
+                        handleFailedAttempt("Invalid email or password");
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -207,6 +220,7 @@ public class LoginActivity extends BaseActivity {
 
     private void showLoginSuccessDialog(FirebaseUser user) {
         setLoading(false);
+        loginAttemptManager.resetAttempts();
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.dialog_login_successful_title))
                 .setMessage(getString(R.string.dialog_welcome_back_message))
@@ -217,6 +231,7 @@ public class LoginActivity extends BaseActivity {
 
     private void showGoogleAuthSuccessDialog(FirebaseUser user) {
         setLoading(false);
+        loginAttemptManager.resetAttempts();
         db.collection("users").document(user.getUid()).collection("profile").document("info").get()
                 .addOnSuccessListener(doc -> {
                     String title = doc.exists() ? "Welcome Back" : "Account Synced";
@@ -280,7 +295,7 @@ public class LoginActivity extends BaseActivity {
         if (e instanceof FirebaseNetworkException) {
             Toast.makeText(this, getString(R.string.msg_no_internet_check), Toast.LENGTH_LONG).show();
         } else if (e instanceof FirebaseAuthInvalidCredentialsException || e instanceof FirebaseAuthInvalidUserException) {
-            Toast.makeText(this, getString(R.string.msg_incorrect_login), Toast.LENGTH_LONG).show();
+            handleFailedAttempt("Invalid email or password");
         } else if (e instanceof FirebaseTooManyRequestsException) {
             Toast.makeText(this, getString(R.string.msg_too_many_attempts), Toast.LENGTH_LONG).show();
         } else {
@@ -288,6 +303,53 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    private void handleFailedAttempt(String defaultMessage) {
+        loginAttemptManager.recordFailedAttempt();
+        if (loginAttemptManager.isLockedOut()) {
+            showLockoutDialog(true);
+        } else {
+            int remaining = loginAttemptManager.getRemainingAttempts();
+            String msg = "Incorrect login details. Please try again.\nYou have " + remaining + " attempt" + (remaining == 1 ? "" : "s") + " remaining.";
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void showLockoutDialog() {
+        showLockoutDialog(false);
+    }
+
+    private void showLockoutDialog(boolean justLocked) {
+        long remainingMillis = loginAttemptManager.getRemainingLockoutMillis();
+        long totalSeconds = remainingMillis / 1000;
+        long minutes = totalSeconds / 60;
+        long seconds = totalSeconds % 60;
+
+        String timeString;
+        if (minutes > 0) {
+            timeString = minutes + " minute" + (minutes == 1 ? "" : "s") + " and " + seconds + " second" + (seconds == 1 ? "" : "s");
+            // If it's precisely 5:00 it might say "5 minutes and 0 seconds" -> better to say "5 minutes"
+            if (seconds == 0) timeString = minutes + " minute" + (minutes == 1 ? "" : "s");
+        } else {
+            timeString = seconds + " second" + (seconds == 1 ? "" : "s");
+        }
+
+        String message;
+        if (justLocked) {
+            message = "For security reasons, login has been temporarily locked after multiple failed attempts.\nPlease try again in 5 minutes.";
+        } else {
+            message = "For security reasons, login is temporarily locked.\nPlease try again in " + timeString + ".";
+        }
+        
+        showSecurityDialog(message);
+    }
+    
+    private void showSecurityDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Security Notice")
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.btn_ok), null)
+                .show();
+    }
     private String friendlyAuthError(Exception e) {
         if (e instanceof FirebaseNetworkException) return "No internet connection.";
         return "Something went wrong.";

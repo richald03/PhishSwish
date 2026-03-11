@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.os.CountDownTimer;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import android.graphics.drawable.Drawable;
 
 import com.example.phishswish.R;
 import com.example.phishswish.utils.LanguageManager;
@@ -51,6 +54,7 @@ public class RegisterActivity extends BaseActivity {
     
     private android.os.Handler pollingHandler = new android.os.Handler();
     private Runnable pollingRunnable;
+    private CountDownTimer verificationTimer;
 
     private TextView tvVerifyEmail;
     private android.widget.ImageView ivEmailVerified;
@@ -65,6 +69,7 @@ public class RegisterActivity extends BaseActivity {
     private MaterialButton btnRegister, btnGoogle;
     private ProgressBar progressBar;
     private View formContent;
+    private TextView tvPasswordMatch;
 
     private final ActivityResultLauncher<Intent> googleLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -110,6 +115,7 @@ public class RegisterActivity extends BaseActivity {
         
         tvVerifyEmail = findViewById(R.id.tvVerifyEmail);
         ivEmailVerified = findViewById(R.id.ivEmailVerified);
+        tvPasswordMatch = findViewById(R.id.tvPasswordMatch);
 
         setupTextWatchers();
 
@@ -121,6 +127,7 @@ public class RegisterActivity extends BaseActivity {
                     user.reload().addOnSuccessListener(aVoid -> {
                         if (user.isEmailVerified()) {
                             currentEmailState = EmailState.VERIFIED;
+                            cancelVerificationTimer();
                             tvVerifyEmail.setVisibility(View.GONE);
                             ivEmailVerified.setVisibility(View.VISIBLE);
                         } else {
@@ -156,21 +163,33 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void setupTextWatchers() {
-        TextWatcher watcher = new TextWatcher() {
+        TextWatcher usernameWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 tilUsername.setError(null);
-                tilPassword.setError(null);
-                tilConfirm.setError(null);
             }
             @Override
             public void afterTextChanged(Editable s) {}
         };
-        etUsername.addTextChangedListener(watcher);
-        etPassword.addTextChangedListener(watcher);
-        etConfirm.addTextChangedListener(watcher);
+        
+        TextWatcher passwordWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilPassword.setError(null);
+                tilConfirm.setError(null);
+                checkPasswordMatch();
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+        
+        etUsername.addTextChangedListener(usernameWatcher);
+        etPassword.addTextChangedListener(passwordWatcher);
+        etConfirm.addTextChangedListener(passwordWatcher);
         
         etEmail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -180,6 +199,7 @@ public class RegisterActivity extends BaseActivity {
                 tilEmail.setError(null);
                 if (currentEmailState != EmailState.UNVERIFIED) {
                     currentEmailState = EmailState.UNVERIFIED;
+                    cancelVerificationTimer();
                     tvVerifyEmail.setVisibility(View.VISIBLE);
                     tvVerifyEmail.setEnabled(true);
                     tvVerifyEmail.setText("Verify");
@@ -190,6 +210,37 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+    }
+
+    private void checkPasswordMatch() {
+        String pass = etPassword.getText() != null ? etPassword.getText().toString() : "";
+        String confirm = etConfirm.getText() != null ? etConfirm.getText().toString() : "";
+
+        if (TextUtils.isEmpty(confirm)) {
+            tvPasswordMatch.setVisibility(View.GONE);
+            return;
+        }
+
+        tvPasswordMatch.setVisibility(View.VISIBLE);
+        int iconSize = (int) (16 * getResources().getDisplayMetrics().density);
+        
+        if (pass.equals(confirm)) {
+            tvPasswordMatch.setText("Passwords match");
+            tvPasswordMatch.setTextColor(ContextCompat.getColor(this, R.color.safe_blue));
+            Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_dot_green);
+            if (icon != null) {
+                icon.setBounds(0, 0, iconSize, iconSize);
+                tvPasswordMatch.setCompoundDrawables(icon, null, null, null);
+            }
+        } else {
+            tvPasswordMatch.setText("Passwords do not match");
+            tvPasswordMatch.setTextColor(ContextCompat.getColor(this, R.color.scam_red));
+            Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_dot_red);
+            if (icon != null) {
+                icon.setBounds(0, 0, iconSize, iconSize);
+                tvPasswordMatch.setCompoundDrawables(icon, null, null, null);
+            }
+        }
     }
 
     private void verifyEmailAction() {
@@ -219,10 +270,12 @@ public class RegisterActivity extends BaseActivity {
                             Toast.makeText(RegisterActivity.this, "Verification email sent. Please check your inbox.", Toast.LENGTH_LONG).show();
                             pollingHandler.removeCallbacks(pollingRunnable);
                             pollingHandler.postDelayed(pollingRunnable, 3000);
+                            startVerificationTimer();
                         } else {
                             user.delete();
                             tilEmail.setError("Failed to send verification email");
                             tvVerifyEmail.setEnabled(true);
+                            tvVerifyEmail.setText("Verify");
                         }
                     });
                 } else {
@@ -239,7 +292,40 @@ public class RegisterActivity extends BaseActivity {
                     tilEmail.setError("Error checking email");
                 }
                 tvVerifyEmail.setEnabled(true);
+                tvVerifyEmail.setText("Verify");
             });
+    }
+
+    private void startVerificationTimer() {
+        tvVerifyEmail.setEnabled(false);
+        if (verificationTimer != null) {
+            verificationTimer.cancel();
+        }
+
+        verificationTimer = new CountDownTimer(60000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long totalSeconds = millisUntilFinished / 1000;
+                long minutes = totalSeconds / 60;
+                long seconds = totalSeconds % 60;
+                tvVerifyEmail.setText(String.format("%d:%02d", minutes, seconds));
+            }
+
+            @Override
+            public void onFinish() {
+                if (currentEmailState != EmailState.VERIFIED) {
+                    tvVerifyEmail.setText("Verify");
+                    tvVerifyEmail.setEnabled(true);
+                }
+            }
+        }.start();
+    }
+
+    private void cancelVerificationTimer() {
+        if (verificationTimer != null) {
+            verificationTimer.cancel();
+            verificationTimer = null;
+        }
     }
 
     private void showGoogleSyncConfirmation(GoogleSignInAccount account) {
@@ -479,5 +565,14 @@ public class RegisterActivity extends BaseActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cancelVerificationTimer();
+        if (pollingHandler != null && pollingRunnable != null) {
+            pollingHandler.removeCallbacks(pollingRunnable);
+        }
     }
 }
