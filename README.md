@@ -18,11 +18,10 @@
 
 *   **Language**: Java
 *   **Architecture**: Android Jetpack (Activity/Fragment, ViewModels, Navigation)
-*   **Database**: Room for local persistence, Firebase Firestore for cloud data.
+*   **Database**: Firebase Firestore for cloud data and user tracking.
 *   **AI/ML**: 
     *   Gemini AI (Generative Analysis)
     *   ML Kit (Text Recognition/OCR)
-    *   TensorFlow Lite (On-device detection)
 *   **Networking**: OkHttp
 *   **Security**: Firebase Auth, Google Identity Services, Secure SharedPreferences.
 
@@ -40,7 +39,7 @@
     GEMINI_API_KEY_1=your_key_here
     VT_API_KEY=your_key_here
     ```
-    *(Refer to `build.gradle.kts` for full key rotation setup)*
+    *(Refer to `app/build.gradle.kts` for full key rotation setup)*
 
 ## 📂 Project Structure
 

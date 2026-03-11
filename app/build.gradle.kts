@@ -71,16 +71,10 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.cardview)
     
-    implementation(libs.room.runtime)
-    annotationProcessor(libs.room.compiler)
-
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
-
-    implementation(libs.tensorflow.lite)
-    implementation(libs.tensorflow.lite.support)
     
     implementation(libs.okhttp)
 
