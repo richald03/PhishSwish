@@ -35,21 +35,20 @@
 
     <!-- Top Bar -->
     <View
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/bg_onboarding_gradient"
-        android:alpha="0.8"
+        android:layout_width="409dp"
+        android:layout_height="59dp"
+        android:background="@drawable/bg_history_header"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/btnBack"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_back_arrow"
-        app:tint="?attr/colorOnSurface"
+        app:tint="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,13 +56,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_camera_scan"
-        android:textColor="?attr/colorOnSurface"
+        android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:shadowColor="#33000000"
-        android:shadowDx="0"
-        android:shadowDy="2"
-        android:shadowRadius="4"
         app:layout_constraintBottom_toBottomOf="@id/btnBack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
