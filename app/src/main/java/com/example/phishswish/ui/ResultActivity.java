@@ -567,9 +567,6 @@ public class ResultActivity extends BaseActivity {
             result.setTimestamp(ts);
         }
         String snippet = result.getSnippet();
-        if (snippet != null && snippet.length() > 120) {
-            snippet = snippet.substring(0, 117) + "...";
-        }
         String extractedUrl = (result.getUrls() != null && !result.getUrls().isEmpty())
                 ? result.getUrls().get(0) : "";
         String sender = SenderDetector.normalize(this, getIntent().getStringExtra("sender"));
